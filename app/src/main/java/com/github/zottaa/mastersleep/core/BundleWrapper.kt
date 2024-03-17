@@ -2,7 +2,7 @@ package com.github.zottaa.mastersleep.core
 
 import android.os.Bundle
 
-interface BundleWrapper<T> {
+interface BundleWrapper {
     interface Save<T> {
         fun save(item: T)
     }
