@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MasterSleep</string>
+    <string name="mondayTextView">MON</string>
+    <string name="tuesdayTextView">TUE</string>
+    <string name="wednesdayTextView">WED</string>
+    <string name="thursdayTextView">THU</string>
+    <string name="fridayTextView">FRI</string>
+    <string name="saturdayTextView">SAT</string>
+    <string name="sundayTextView">SUN</string>
 </resources>
