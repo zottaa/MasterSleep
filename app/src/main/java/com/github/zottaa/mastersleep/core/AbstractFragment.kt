@@ -8,11 +8,10 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import dagger.hilt.android.AndroidEntryPoint
 
 
 abstract class AbstractFragment<B : ViewBinding> : Fragment() {
-    protected var _binding: B? = null
+    private var _binding: B? = null
     protected val binding get() = _binding!!
 
     protected abstract fun bind(
