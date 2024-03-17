@@ -11,10 +11,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val navigation: Navigation.Mutable
 ) : ViewModel(), Navigation.Read {
-    fun init(firstRun: Boolean) {
-        if (firstRun)
-            navigation.update(DiaryListScreen)
-    }
 
     override fun liveData(): LiveData<Screen> = navigation.liveData()
 }

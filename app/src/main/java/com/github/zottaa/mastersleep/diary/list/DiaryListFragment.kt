@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.zottaa.mastersleep.core.AbstractFragment
+import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -23,47 +25,54 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentDiaryListBinding.inflate(inflater, container, false)
 
+    private val viewModel: DiaryListViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val date = LocalDate.now()
-        binding.currentMonthYearTextView.text =
-            date.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
-        val days = daysInWeekArray(date)
 
-        val adapter = CalendarAdapter(selectedDate = date)
+        val adapter = CalendarAdapter(
+            object : SelectDay {
+                override fun selectDay(currentDay: LocalDate) {
+                    viewModel.selectDay(currentDay)
+                }
+            })
 
         binding.calendarRecyclerView.adapter = adapter
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
 
-        adapter.update(days)
-    }
-
-    private fun daysInWeekArray(selectedDate: LocalDate): ArrayList<LocalDate> {
-        val days = ArrayList<LocalDate>()
-
-        var current = selectedDate.with(DayOfWeek.MONDAY)
-
-        while (current.dayOfWeek != DayOfWeek.SUNDAY) {
-            days.add(current)
-            current = current.plusDays(1)
+        viewModel.selectedDateLiveData.observe(viewLifecycleOwner) {
+            adapter.updateDate(it)
+            binding.currentMonthYearTextView.text =
+                it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
         }
 
-        days.add(current)
+        viewModel.weekLiveData.observe(viewLifecycleOwner) {
+            adapter.update(it)
+        }
 
-        return days
+        binding.nextWeekButton.setOnClickListener {
+            viewModel.nextWeek()
+        }
+
+        binding.previousWeekButton.setOnClickListener {
+            viewModel.previousWeek()
+        }
+
+        viewModel.init()
+
+        if (savedInstanceState != null) {
+            viewModel.restore(
+                BundleWrapper.String(savedInstanceState),
+                BundleWrapper.StringArray(savedInstanceState)
+            )
+        }
     }
 
-    private fun sundayForDate(currentDate: LocalDate): LocalDate {
-        val oneWeekAgo = currentDate.minusWeeks(1)
-
-        var current = currentDate
-
-        while (current.isAfter(oneWeekAgo)) {
-            if (current.dayOfWeek == DayOfWeek.SUNDAY)
-                return current
-
-            current = current.minusDays(1)
-        }
-        return current
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.save(
+            BundleWrapper.String(outState),
+            BundleWrapper.StringArray(outState)
+        )
     }
 }

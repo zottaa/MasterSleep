@@ -1,5 +1,6 @@
 package com.github.zottaa.mastersleep.core
 
+import com.github.zottaa.mastersleep.diary.list.DateUtils
 import com.github.zottaa.mastersleep.main.Navigation
 import dagger.Binds
 import dagger.Module
@@ -20,5 +21,9 @@ abstract class CoreModule {
     companion object {
         @Provides
         fun provideScreenSingleLiveEvent(): SingleLiveEvent<Screen> = SingleLiveEvent()
+
+        @Provides
+        @Singleton
+        fun provideDateUtils(): DateUtils = DateUtils.Base()
     }
 }

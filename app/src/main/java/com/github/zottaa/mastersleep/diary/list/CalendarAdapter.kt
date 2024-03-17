@@ -9,8 +9,9 @@ import com.github.zottaa.mastersleep.databinding.CalendarItemBinding
 import java.time.LocalDate
 
 class CalendarAdapter(
+    private val selectDay: SelectDay,
     private var days: ArrayList<LocalDate> = ArrayList(),
-    private var selectedDate: LocalDate
+    private var selectedDate: LocalDate = LocalDate.now()
 ) : RecyclerView.Adapter<CalendarViewHolder>() {
     fun update(newList: ArrayList<LocalDate>) {
         val diffUtil = CalendarDaysDiffUtil(days, newList)
@@ -19,16 +20,20 @@ class CalendarAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun updateDate(newSelectedDate: LocalDate) {
-        selectedDate = newSelectedDate
+    fun updateDate(currentDay: LocalDate) {
+        if (selectedDate != currentDay) {
+            val oldIndex = days.indexOf(selectedDate)
+            selectedDate = currentDay
+            notifyItemChanged(oldIndex)
+            notifyItemChanged(days.indexOf(selectedDate))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val binding = CalendarItemBinding.inflate(
             LayoutInflater.from(parent.context)
         )
-        parent.layoutParams.height = parent.height
-        return CalendarViewHolder(binding)
+        return CalendarViewHolder(binding, selectDay)
     }
 
     override fun getItemCount(): Int = days.size
@@ -39,7 +44,8 @@ class CalendarAdapter(
 }
 
 class CalendarViewHolder(
-    private val binding: CalendarItemBinding
+    private val binding: CalendarItemBinding,
+    private val selectDay: SelectDay
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun hold(days: ArrayList<LocalDate>, position: Int, selectedDate: LocalDate) {
@@ -48,8 +54,14 @@ class CalendarViewHolder(
         binding.calendarItemDayName.text = day.dayOfWeek.toString().subSequence(0, 3)
         binding.calendarItemDayNumber.text = day.dayOfMonth.toString()
 
-        if (day == selectedDate) {
+        if (day.isEqual(selectedDate)) {
             binding.calendarItemRoot.setBackgroundColor(Color.LTGRAY)
+        } else {
+            binding.calendarItemRoot.setBackgroundColor(Color.WHITE)
+        }
+
+        binding.calendarItemRoot.setOnClickListener {
+            selectDay.selectDay(days[position])
         }
     }
 }
@@ -66,5 +78,5 @@ class CalendarDaysDiffUtil(
         oldList[oldItemPosition] === (newList[newItemPosition])
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition] == (newList[newItemPosition])
+        oldList[oldItemPosition].isEqual(newList[newItemPosition])
 }
