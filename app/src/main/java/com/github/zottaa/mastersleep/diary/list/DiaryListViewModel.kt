@@ -3,14 +3,28 @@ package com.github.zottaa.mastersleep.diary.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.core.BundleWrapper
+import com.github.zottaa.mastersleep.core.SingleLiveEvent
+import com.github.zottaa.mastersleep.diary.core.NoteUi
+import com.github.zottaa.mastersleep.diary.core.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
 class DiaryListViewModel @Inject constructor(
-    private val dateUtils: DateUtils
+    private val dateUtils: DateUtils,
+    private val repository: NotesRepository.ReadList,
+    @Named("IO")
+    private val dispatcher: CoroutineDispatcher,
+    @Named("Main")
+    private val dispatcherMain: CoroutineDispatcher
 ) : ViewModel(), SelectDay {
 
     val weekLiveData: LiveData<ArrayList<LocalDate>>
@@ -20,9 +34,15 @@ class DiaryListViewModel @Inject constructor(
     val selectedDateLiveData: LiveData<LocalDate>
         get() = _selectedDateLiveData
     private val _selectedDateLiveData: MutableLiveData<LocalDate> = MutableLiveData()
-    fun init() {
-        _selectedDateLiveData.value = LocalDate.now()
-        _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!)
+
+    val notesLiveData: LiveData<List<NoteUi>>
+        get() = _notesLiveData
+    private val _notesLiveData: MutableLiveData<List<NoteUi>> = MutableLiveData()
+    fun init(firstRun: Boolean) {
+        if (firstRun) {
+            selectDay(LocalDate.now())
+            _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!)
+        }
     }
 
     fun nextWeek() {
@@ -37,7 +57,12 @@ class DiaryListViewModel @Inject constructor(
 
     override fun selectDay(currentDay: LocalDate) {
         _selectedDateLiveData.value = currentDay
-        println(currentDay.dayOfYear.toString())
+        viewModelScope.launch(dispatcher) {
+            val notes = repository.notes(_selectedDateLiveData.value!!.toEpochDay()).map { it.toUi() }
+            withContext(dispatcherMain) {
+                _notesLiveData.value = notes
+            }
+        }
     }
 
     fun restore(

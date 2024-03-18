@@ -7,5 +7,17 @@
     <fragment
         android:id="@+id/diaryListFragment"
         android:name="com.github.zottaa.mastersleep.diary.list.DiaryListFragment"
-        android:label="DiaryListFragment" />
+        android:label="DiaryListFragment">
+        <action
+            android:id="@+id/action_diaryListFragment_to_diaryCreateFragment"
+            app:destination="@id/diaryCreateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/diaryCreateFragment"
+        android:name="com.github.zottaa.mastersleep.diary.create.DiaryCreateFragment"
+        android:label="DiaryCreateFragment" >
+        <argument
+            android:name="date"
+            app:argType="long" />
+    </fragment>
 </navigation>

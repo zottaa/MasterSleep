@@ -9,10 +9,10 @@
         android:id="@+id/previousWeekButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="4dp"
         android:src="@drawable/arrow_back"
         app:layout_constraintEnd_toStartOf="@id/currentMonthYearTextView"
         app:layout_constraintHorizontal_weight="1"
-        android:layout_margin="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,111 +20,53 @@
         android:id="@+id/currentMonthYearTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         app:layout_constraintEnd_toStartOf="@id/nextWeekButton"
         app:layout_constraintHorizontal_weight="2"
         app:layout_constraintStart_toEndOf="@id/previousWeekButton"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="8dp"
         tools:text="March 2024" />
 
     <ImageButton
         android:id="@+id/nextWeekButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/arrow_forward"
         android:layout_margin="4dp"
+        android:src="@drawable/arrow_forward"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@id/currentMonthYearTextView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="next" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/mondayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/mondayTextView"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/tuesdayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/tuesdayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/tuesdayTextView"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/wednesdayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/mondayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/wednesdayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/thursdayTextView"-->
-<!--        android:text="@string/wednesdayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/tuesdayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/thursdayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/fridayTextView"-->
-<!--        android:text="@string/thursdayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/wednesdayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/fridayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="4dp"-->
-<!--        android:text="@string/fridayTextView"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/saturdayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/thursdayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/saturdayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:text="@string/saturdayTextView"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        app:layout_constraintEnd_toStartOf="@id/sundayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/fridayTextView"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/sundayTextView"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="4dp"-->
-<!--        app:layout_constraintHorizontal_weight="1"-->
-<!--        android:text="@string/sundayTextView"-->
-<!--        app:layout_constraintStart_toEndOf="@id/saturdayTextView"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />-->
-    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendarRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintVertical_weight="1"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/nextWeekButton"/>
+        app:layout_constraintTop_toBottomOf="@id/nextWeekButton" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarRecyclerView" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/content_description_add"
+        android:src="@drawable/ic_add_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
