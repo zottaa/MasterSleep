@@ -10,7 +10,6 @@ import com.github.zottaa.mastersleep.diary.core.NoteUi
 import com.github.zottaa.mastersleep.diary.core.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -29,11 +28,11 @@ class DiaryListViewModel @Inject constructor(
 
     val weekLiveData: LiveData<ArrayList<LocalDate>>
         get() = _weekLiveData
-    private val _weekLiveData: MutableLiveData<ArrayList<LocalDate>> = MutableLiveData()
+    private val _weekLiveData: MutableLiveData<ArrayList<LocalDate>> = SingleLiveEvent()
 
     val selectedDateLiveData: LiveData<LocalDate>
         get() = _selectedDateLiveData
-    private val _selectedDateLiveData: MutableLiveData<LocalDate> = MutableLiveData()
+    private val _selectedDateLiveData: MutableLiveData<LocalDate> = SingleLiveEvent()
 
     val notesLiveData: LiveData<List<NoteUi>>
         get() = _notesLiveData
