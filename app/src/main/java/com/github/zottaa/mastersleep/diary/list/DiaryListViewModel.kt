@@ -32,7 +32,7 @@ class DiaryListViewModel @Inject constructor(
 
     val selectedDateLiveData: LiveData<LocalDate>
         get() = _selectedDateLiveData
-    private val _selectedDateLiveData: MutableLiveData<LocalDate> = SingleLiveEvent()
+    private val _selectedDateLiveData: MutableLiveData<LocalDate> = MutableLiveData()
 
     val notesLiveData: LiveData<List<NoteUi>>
         get() = _notesLiveData

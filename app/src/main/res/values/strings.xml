@@ -9,4 +9,5 @@
     <string name="sundayTextView">SUN</string>
     <string name="hint_title">title</string>
     <string name="content_description_add">add</string>
+    <string name="content_description_delete">delete</string>
 </resources>

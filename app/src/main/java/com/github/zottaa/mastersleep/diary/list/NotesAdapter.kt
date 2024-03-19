@@ -8,13 +8,14 @@ import com.github.zottaa.mastersleep.databinding.NoteItemBinding
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 
 class NotesAdapter(
+    private val editNote: EditNote,
     private var list: List<NoteUi> = emptyList()
 ) : RecyclerView.Adapter<NoteListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListViewHolder {
         val binding = NoteItemBinding.inflate(
             LayoutInflater.from(parent.context)
         )
-        return NoteListViewHolder(binding)
+        return NoteListViewHolder(binding, editNote)
     }
 
     override fun getItemCount(): Int = list.size
@@ -35,12 +36,16 @@ class NotesAdapter(
 
 class NoteListViewHolder(
     private val binding: NoteItemBinding,
+    private val editNote: EditNote
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun hold(noteUi: NoteUi) {
         noteUi.apply {
             showTitle(binding.titleTextView)
             showContent(binding.contentTextView)
+        }
+        binding.noteRoot.setOnClickListener {
+            editNote.editNote(noteUi)
         }
     }
 }

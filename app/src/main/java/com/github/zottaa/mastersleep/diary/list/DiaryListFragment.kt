@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
+import com.github.zottaa.mastersleep.diary.core.NoteUi
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,7 +35,14 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         binding.calendarRecyclerView.adapter = calendarAdapter
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
 
-        val noteAdapter = NotesAdapter()
+        val noteAdapter = NotesAdapter(
+            object : EditNote {
+                override fun editNote(noteUi: NoteUi) {
+                    val action = noteUi.mapAction(DiaryListFragmentDirections)
+                    findNavController().navigate(action)
+                }
+            }
+        )
         binding.notesRecyclerView.adapter = noteAdapter
         binding.notesRecyclerView.addItemDecoration(
             DividerItemDecoration(

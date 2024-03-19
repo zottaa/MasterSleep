@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_diaryListFragment_to_diaryCreateFragment"
             app:destination="@id/diaryCreateFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_diaryEditFragment"
+            app:destination="@id/diaryEditFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryCreateFragment"
@@ -18,6 +21,14 @@
         android:label="DiaryCreateFragment" >
         <argument
             android:name="date"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/diaryEditFragment"
+        android:name="com.github.zottaa.mastersleep.diary.edit.DiaryEditFragment"
+        android:label="DiaryEditFragment" >
+        <argument
+            android:name="noteId"
             app:argType="long" />
     </fragment>
 </navigation>
