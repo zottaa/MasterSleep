@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
@@ -25,7 +27,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
         val calendarAdapter = CalendarAdapter(
             object : SelectDay {
                 override fun selectDay(currentDay: LocalDate) {

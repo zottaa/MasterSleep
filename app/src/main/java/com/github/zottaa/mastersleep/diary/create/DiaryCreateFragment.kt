@@ -2,22 +2,25 @@ package com.github.zottaa.mastersleep.diary.create
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryCreateBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>() {
+class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), MenuProvider {
     private val args: DiaryCreateFragmentArgs by navArgs()
     private val viewModel: DiaryCreateViewModel by viewModels()
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -39,7 +42,16 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(onBackPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
+        requireActivity().addMenuProvider(this, viewLifecycleOwner)
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
+            AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.arrow_back
+            )
         if (savedInstanceState != null) {
             binding.titleTextInputEditText.setText(savedInstanceState.getString(TITLE_KEY))
             binding.contentTextInputEditText.setText(savedInstanceState.getString(CONTENT_KEY))
@@ -52,13 +64,29 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>() {
         outState.putString(CONTENT_KEY, binding.contentTextInputEditText.text.toString())
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        onBackPressedCallback.remove()
-    }
-
     companion object {
         private const val TITLE_KEY = "titleKey"
         private const val CONTENT_KEY = "contentKey"
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.menu_fragment_create_and_edit, menu)
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            android.R.id.home -> {
+                hideKeyboard()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+                return true
+            }
+
+            R.id.delete_menu_item -> {
+                hideKeyboard()
+                findNavController().popBackStack()
+                return true
+            }
+        }
+        return false
     }
 }
