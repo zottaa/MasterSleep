@@ -46,12 +46,12 @@ class DiaryListViewModel @Inject constructor(
 
     fun nextWeek() {
         _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!.plusWeeks(1))
-        _selectedDateLiveData.value = weekLiveData.value!![0]
+        selectDay(weekLiveData.value!![0])
     }
 
     fun previousWeek() {
         _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!.minusWeeks(1))
-        _selectedDateLiveData.value = weekLiveData.value!![6]
+        selectDay(weekLiveData.value!![6])
     }
 
     override fun selectDay(currentDay: LocalDate) {
@@ -71,7 +71,7 @@ class DiaryListViewModel @Inject constructor(
         val selectedDateString = selectedDateBundleWrapper.restore()
         val weekStringArray = weekBundleWrapper.restore()
 
-        _selectedDateLiveData.value = LocalDate.parse(selectedDateString)
+        selectDay(LocalDate.parse(selectedDateString))
         _weekLiveData.value = ArrayList(weekStringArray.map { LocalDate.parse(it) })
     }
 

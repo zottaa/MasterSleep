@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
@@ -47,9 +46,8 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         )
         binding.notesRecyclerView.adapter = noteAdapter
         binding.notesRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                binding.notesRecyclerView.context,
-                DividerItemDecoration.VERTICAL
+            SpaceItemDecoration(
+                16
             )
         )
 
