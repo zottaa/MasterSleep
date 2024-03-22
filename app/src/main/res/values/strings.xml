@@ -11,4 +11,8 @@
     <string name="content_description_add">add</string>
     <string name="content_description_delete">delete</string>
     <string name="item_navigation_diary">Diary</string>
+    <string name="item_navigation_clock">clock</string>
+    <string name="now">Now</string>
+    <string name="alarm">Alarm</string>
+    <string name="set_alarm">Set Alarm</string>
 </resources>

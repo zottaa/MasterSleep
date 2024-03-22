@@ -6,13 +6,8 @@
         android:icon="@drawable/ic_diary"
         />
     <item
-        android:id="@+id/action_create"
-        android:title="@string/item_navigation_diary"
-        android:icon="@drawable/ic_diary"
-        />
-    <item
-        android:id="@+id/action_edit"
-        android:title="@string/item_navigation_diary"
-        android:icon="@drawable/ic_diary"
+        android:id="@+id/action_clock"
+        android:title="@string/item_navigation_clock"
+        android:icon="@drawable/baseline_access_time_24"
         />
 </menu>

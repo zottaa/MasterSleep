@@ -51,6 +51,25 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
             )
         )
 
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.action_diary -> {
+                    true
+                }
+
+                R.id.action_clock -> {
+                    findNavController().navigate(
+                        DiaryListFragmentDirections.actionDiaryListFragmentToClockSetFragment()
+                    )
+                    true
+                }
+
+                else -> {
+                    false
+                }
+            }
+        }
+
         viewModel.selectedDateLiveData.observe(viewLifecycleOwner) {
             calendarAdapter.updateDate(it)
             binding.currentMonthYearTextView.text =

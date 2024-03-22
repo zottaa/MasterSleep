@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_diaryListFragment_to_diaryEditFragment"
             app:destination="@id/diaryEditFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_clockSetFragment"
+            app:destination="@id/clockSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryCreateFragment"
@@ -30,5 +33,13 @@
         <argument
             android:name="noteId"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/clockSetFragment"
+        android:name="com.github.zottaa.mastersleep.clock.set.ClockSetFragment"
+        android:label="ClockSetFragment" >
+        <action
+            android:id="@+id/action_clockSetFragment_to_diaryListFragment2"
+            app:destination="@id/diaryListFragment" />
     </fragment>
 </navigation>
