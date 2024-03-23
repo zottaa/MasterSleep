@@ -3,6 +3,7 @@ package com.github.zottaa.mastersleep.diary.core
 import android.widget.TextView
 import com.github.zottaa.mastersleep.diary.list.DiaryListFragmentDirections
 
+
 data class NoteUi(
     private val id: Long,
     private val title: String,

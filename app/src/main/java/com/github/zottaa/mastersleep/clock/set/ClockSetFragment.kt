@@ -6,6 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
@@ -14,6 +17,7 @@ import com.github.zottaa.mastersleep.databinding.FragmentClockSetBinding
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 
 @AndroidEntryPoint
@@ -62,8 +66,12 @@ class ClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
             }
         }
 
-        viewModel.selectedTimeLiveData.observe(viewLifecycleOwner) {
-            binding.textClockAlarm.text = it
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.selectedTimeLiveData.collect {
+                    binding.textClockAlarm.text = it
+                }
+            }
         }
 
         viewModel.init(DateFormat.is24HourFormat(requireContext()))

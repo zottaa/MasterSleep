@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.zottaa.mastersleep.R
@@ -14,6 +17,7 @@ import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -70,18 +74,26 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
             }
         }
 
-        viewModel.selectedDateLiveData.observe(viewLifecycleOwner) {
-            calendarAdapter.updateDate(it)
-            binding.currentMonthYearTextView.text =
-                it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
-        }
-
-        viewModel.weekLiveData.observe(viewLifecycleOwner) {
-            calendarAdapter.update(it)
-        }
-
-        viewModel.notesLiveData.observe(viewLifecycleOwner) {
-            noteAdapter.update(it)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.selectedDate.collect {
+                        calendarAdapter.updateDate(it)
+                        binding.currentMonthYearTextView.text =
+                            it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+                    }
+                }
+                launch {
+                    viewModel.week.collect {
+                        calendarAdapter.update(it)
+                    }
+                }
+                launch {
+                    viewModel.notes.collect {
+                        noteAdapter.update(it)
+                    }
+                }
+            }
         }
 
         binding.nextWeekButton.setOnClickListener {
@@ -93,7 +105,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         }
 
         binding.addButton.setOnClickListener {
-            val date = viewModel.selectedDateLiveData.value?.toEpochDay() ?: 0L
+            val date = viewModel.selectedDate.value.toEpochDay()
             val action =
                 DiaryListFragmentDirections.actionDiaryListFragmentToDiaryCreateFragment(date)
             findNavController().navigate(action)

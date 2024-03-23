@@ -1,15 +1,14 @@
 package com.github.zottaa.mastersleep.diary.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.core.BundleWrapper
-import com.github.zottaa.mastersleep.core.SingleLiveEvent
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 import com.github.zottaa.mastersleep.diary.core.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -26,40 +25,53 @@ class DiaryListViewModel @Inject constructor(
     private val dispatcherMain: CoroutineDispatcher
 ) : ViewModel(), SelectDay {
 
-    val weekLiveData: LiveData<ArrayList<LocalDate>>
-        get() = _weekLiveData
-    private val _weekLiveData: MutableLiveData<ArrayList<LocalDate>> = SingleLiveEvent()
+    val week: StateFlow<ArrayList<LocalDate>>
+        get() = _week
+    private val _week: MutableStateFlow<ArrayList<LocalDate>> =
+        MutableStateFlow(arrayListOf())
 
-    val selectedDateLiveData: LiveData<LocalDate>
-        get() = _selectedDateLiveData
-    private val _selectedDateLiveData: MutableLiveData<LocalDate> = MutableLiveData()
+    val selectedDate: StateFlow<LocalDate>
+        get() = _selectedDate
+    private val _selectedDate: MutableStateFlow<LocalDate> =
+        MutableStateFlow(LocalDate.now())
 
-    val notesLiveData: LiveData<List<NoteUi>>
-        get() = _notesLiveData
-    private val _notesLiveData: MutableLiveData<List<NoteUi>> = MutableLiveData()
+    val notes: StateFlow<List<NoteUi>>
+        get() = _notes
+    private val _notes: MutableStateFlow<List<NoteUi>> = MutableStateFlow(listOf())
     fun init(firstRun: Boolean) {
         if (firstRun) {
-            selectDay(LocalDate.now())
-            _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!)
+            viewModelScope.launch(dispatcher) {
+                selectDay(LocalDate.now())
+                _week.emit(dateUtils.daysInWeekArray(selectedDate.value))
+            }
         }
     }
 
     fun nextWeek() {
-        _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!.plusWeeks(1))
-        selectDay(weekLiveData.value!![0])
+        viewModelScope.launch {
+            _week.emit(dateUtils.daysInWeekArray(selectedDate.value.plusWeeks(1)))
+            withContext(dispatcher) {
+                selectDay(week.value[0])
+            }
+        }
     }
 
     fun previousWeek() {
-        _weekLiveData.value = dateUtils.daysInWeekArray(selectedDateLiveData.value!!.minusWeeks(1))
-        selectDay(weekLiveData.value!![6])
+        viewModelScope.launch {
+            _week.emit(dateUtils.daysInWeekArray(selectedDate.value.minusWeeks(1)))
+            withContext(dispatcher) {
+                selectDay(week.value[6])
+            }
+        }
     }
 
     override fun selectDay(currentDay: LocalDate) {
-        _selectedDateLiveData.value = currentDay
-        viewModelScope.launch(dispatcher) {
-            val notes = repository.notes(_selectedDateLiveData.value!!.toEpochDay()).map { it.toUi() }
-            withContext(dispatcherMain) {
-                _notesLiveData.value = notes
+        viewModelScope.launch {
+            _selectedDate.emit(currentDay)
+            withContext(dispatcher) {
+                val notes =
+                    repository.notes(_selectedDate.value.toEpochDay()).map { it.toUi() }
+                _notes.emit(notes)
             }
         }
     }
@@ -68,21 +80,25 @@ class DiaryListViewModel @Inject constructor(
         selectedDateBundleWrapper: BundleWrapper.String,
         weekBundleWrapper: BundleWrapper.StringArray
     ) {
-        val selectedDateString = selectedDateBundleWrapper.restore()
-        val weekStringArray = weekBundleWrapper.restore()
-
-        selectDay(LocalDate.parse(selectedDateString))
-        _weekLiveData.value = ArrayList(weekStringArray.map { LocalDate.parse(it) })
+        viewModelScope.launch {
+            val selectedDateString = selectedDateBundleWrapper.restore()
+            val weekStringArray = weekBundleWrapper.restore()
+            withContext(dispatcher) {
+                selectDay(LocalDate.parse(selectedDateString))
+                _week.emit(ArrayList(weekStringArray.map { LocalDate.parse(it) }))
+            }
+        }
     }
 
     fun save(
         selectedDateBundleWrapper: BundleWrapper.String,
         weekBundleWrapper: BundleWrapper.StringArray
     ) {
-        val selectedDate = selectedDateLiveData.value?.toString() ?: ""
-        val weekList = weekLiveData.value?.map { it.toString() } ?: emptyList()
-
-        selectedDateBundleWrapper.save(selectedDate)
-        weekBundleWrapper.save(ArrayList(weekList))
+        viewModelScope.launch {
+            val selectedDate = selectedDate.value.toString()
+            val weekList = week.value.map { it.toString() }
+            selectedDateBundleWrapper.save(selectedDate)
+            weekBundleWrapper.save(ArrayList(weekList))
+        }
     }
 }

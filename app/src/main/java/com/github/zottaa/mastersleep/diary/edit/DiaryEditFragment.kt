@@ -13,6 +13,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
@@ -20,6 +23,7 @@ import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryEditBinding
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProvider {
@@ -50,10 +54,14 @@ class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProv
                 R.drawable.arrow_back
             )
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
-        
-        viewModel.noteLiveData.observe(viewLifecycleOwner) {
-            it.showTitle(binding.titleEditTextInputEditText)
-            it.showContent(binding.contentEditTextInputEditText)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.noteLiveData.collect {
+                    it.showTitle(binding.titleEditTextInputEditText)
+                    it.showContent(binding.contentEditTextInputEditText)
+                }
+            }
         }
 
         viewModel.init(args.noteId)
