@@ -1,4 +1,4 @@
-package com.github.zottaa.mastersleep.clock.set
+package com.github.zottaa.mastersleep.alarmclock.set
 
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -21,11 +21,11 @@ import kotlinx.coroutines.launch
 import java.time.LocalTime
 
 @AndroidEntryPoint
-class ClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
+class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentClockSetBinding.inflate(inflater, container, false)
 
-    private val viewModel: ClockSetViewModel by viewModels()
+    private val viewModel: AlarmClockSetViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,14 +44,20 @@ class ClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                 viewModel.setAlarmTime(picker.hour, picker.minute, isSystem24Hour)
             }
 
-            picker.show(childFragmentManager, ClockSetFragment::class.java.name)
+            picker.show(childFragmentManager, AlarmClockSetFragment::class.java.name)
+        }
+
+        binding.startAlarmButton.setOnClickListener {
+            findNavController().navigate(
+                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment(viewModel.alarmTimeInLong(DateFormat.is24HourFormat(requireContext())))
+            )
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.action_diary -> {
                     findNavController().navigate(
-                        ClockSetFragmentDirections.actionClockSetFragmentToDiaryListFragment2()
+                        AlarmClockSetFragmentDirections.actionClockSetFragmentToDiaryListFragment2()
                     )
                     true
                 }

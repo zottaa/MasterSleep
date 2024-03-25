@@ -1,4 +1,4 @@
-package com.github.zottaa.mastersleep.clock.set
+package com.github.zottaa.mastersleep.alarmclock.set
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,12 +8,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
-class ClockSetViewModel @Inject constructor(
+class AlarmClockSetViewModel @Inject constructor(
     @Named("IO")
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -36,6 +39,18 @@ class ClockSetViewModel @Inject constructor(
                 _selectedTimeLiveData.emit(formattedTime)
             }
         }
+    }
+
+    fun alarmTimeInLong(is24HourFormat: Boolean): Long {
+        val formatter = if (is24HourFormat) {
+            DateTimeFormatter.ofPattern("HH:mm")
+        } else {
+            DateTimeFormatter.ofPattern("hh:mm a")
+        }
+        val localDate = LocalDate.now()
+        val localTime = LocalTime.parse(_selectedTimeLiveData.value, formatter)
+        val localDateTime = localDate.atTime(localTime)
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 
     fun save(
