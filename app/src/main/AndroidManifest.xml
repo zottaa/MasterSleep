@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".alarmclock.schedule.AlarmClockReceiver" />
+        <service android:name=".alarmclock.ringtone.RingtoneService" />
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.github.zottaa.mastersleep.alarmclock.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -15,6 +16,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
+import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockScheduleBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +53,7 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
         binding.cancelAlarmButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
+            requireContext().stopService(Intent(context, RingtoneService::class.java))
         }
         schedule.schedule(AlarmItem(args.time))
     }
