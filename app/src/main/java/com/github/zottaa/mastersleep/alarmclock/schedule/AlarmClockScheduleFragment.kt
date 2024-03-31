@@ -1,6 +1,5 @@
 package com.github.zottaa.mastersleep.alarmclock.schedule
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -12,11 +11,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
-import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockScheduleBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding>(), MenuProvider {
     private val args: AlarmClockScheduleFragmentArgs by navArgs()
-    private val viewModel: AlarmClockScheduleViewModel by viewModels()
     private lateinit var schedule: AlarmClockSchedule
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -53,7 +49,6 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
         binding.cancelAlarmButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
-            requireContext().stopService(Intent(context, RingtoneService::class.java))
         }
         schedule.schedule(AlarmItem(args.time))
     }

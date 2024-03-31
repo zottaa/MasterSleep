@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/diaryListFragment">
+    app:startDestination="@id/alarmClockRingFragment">
 
     <fragment
         android:id="@+id/diaryListFragment"
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/diaryCreateFragment"
         android:name="com.github.zottaa.mastersleep.diary.create.DiaryCreateFragment"
-        android:label="DiaryCreateFragment" >
+        android:label="DiaryCreateFragment">
         <argument
             android:name="date"
             app:argType="long" />
@@ -29,7 +29,7 @@
     <fragment
         android:id="@+id/diaryEditFragment"
         android:name="com.github.zottaa.mastersleep.diary.edit.DiaryEditFragment"
-        android:label="DiaryEditFragment" >
+        android:label="DiaryEditFragment">
         <argument
             android:name="noteId"
             app:argType="long" />
@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/clockSetFragment"
         android:name="com.github.zottaa.mastersleep.alarmclock.set.AlarmClockSetFragment"
-        android:label="ClockSetFragment" >
+        android:label="ClockSetFragment">
         <action
             android:id="@+id/action_clockSetFragment_to_diaryListFragment2"
             app:destination="@id/diaryListFragment" />
@@ -48,9 +48,22 @@
     <fragment
         android:id="@+id/alarmClockScheduleFragment"
         android:name="com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockScheduleFragment"
-        android:label="AlarmClockScheduleFragment" >
+        android:label="AlarmClockScheduleFragment">
         <argument
             android:name="time"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/alarmClockRingFragment"
+        android:name="com.github.zottaa.mastersleep.alarmclock.ring.AlarmClockRingFragment"
+        android:label="AlarmClockRingFragment">
+        <action
+            android:id="@+id/action_alarmClockRingFragment_to_diaryListFragment"
+            app:destination="@id/diaryListFragment" />
+        <action
+            android:id="@+id/action_alarmClockRingFragment_to_alarmClockScheduleFragment"
+            app:destination="@id/alarmClockScheduleFragment"
+            app:popUpTo="@id/alarmClockRingFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
