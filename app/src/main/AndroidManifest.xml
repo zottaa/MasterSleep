@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
-        android:allowBackup="true"
         android:name=".core.MasterSleepApp"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -25,7 +29,9 @@
             </intent-filter>
         </activity>
         <receiver android:name=".alarmclock.schedule.AlarmClockReceiver" />
-        <service android:name=".alarmclock.ringtone.RingtoneService" />
+        <service
+            android:name=".alarmclock.ringtone.RingtoneService"
+            android:foregroundServiceType="mediaPlayback" />
     </application>
 
 </manifest>

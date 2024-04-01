@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/alarmClockRingFragment">
+    app:startDestination="@id/diaryListFragment">
 
     <fragment
         android:id="@+id/diaryListFragment"
