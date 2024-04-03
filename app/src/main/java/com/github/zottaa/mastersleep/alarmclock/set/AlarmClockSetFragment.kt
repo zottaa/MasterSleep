@@ -32,7 +32,6 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         binding.setAlarmTimeButton.setOnClickListener {
             val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
             val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
-
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(clockFormat)
                 .setTitleText(requireContext().getString(R.string.set_alarm))

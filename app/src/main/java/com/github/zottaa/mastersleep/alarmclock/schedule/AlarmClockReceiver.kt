@@ -10,6 +10,15 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AlarmClockReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        context?.startService(Intent(context, RingtoneService::class.java))
+        context?.let {
+            Intent(context, RingtoneService::class.java).also { intent ->
+                intent.action = START_SERVICE
+                it.startService(intent)
+            }
+        }
+    }
+
+    companion object {
+        private const val START_SERVICE = "START_SERVICE"
     }
 }

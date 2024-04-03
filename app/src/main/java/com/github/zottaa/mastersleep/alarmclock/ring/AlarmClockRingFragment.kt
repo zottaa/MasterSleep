@@ -20,13 +20,12 @@ class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireContext().startService(Intent(context, RingtoneService::class.java))
         binding.snoozeButton.setOnClickListener {
             findNavController().navigate(
                 AlarmClockRingFragmentDirections.actionAlarmClockRingFragmentToAlarmClockScheduleFragment(
                     LocalDateTime
                         .now()
-                        .plusMinutes(5)
+                        .plusMinutes(1)
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()
@@ -39,7 +38,16 @@ class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
     }
 
     override fun onDestroyView() {
-        requireContext().stopService(Intent(context, RingtoneService::class.java))
+        requireContext().let {
+            Intent(it, RingtoneService::class.java).also { intent ->
+                intent.action = STOP_SERVICE
+                it.startService(intent)
+            }
+        }
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val STOP_SERVICE = "STOP_SERVICE"
     }
 }

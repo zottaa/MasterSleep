@@ -24,28 +24,38 @@ class RingtoneService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        createNotificationChannel()
-        val notificationIntent = Intent(this, MainActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE
-        )
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Alarm")
-            .setContentText("Wake up!")
-            .setSmallIcon(R.drawable.baseline_access_time_24)
-            .setContentIntent(pendingIntent)
-            .setOngoing(true)
-            .build()
+        if (intent?.action == START_SERVICE) {
+            createNotificationChannel()
+            val notificationIntent = Intent(this, MainActivity::class.java)
+            notificationIntent.putExtra(INTENT_KEY, RING_FRAGMENT)
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
-        startForeground(1, notification)
-        ringtone.play()
+            val stopServiceIntent = Intent(this, RingtoneService::class.java)
+            stopServiceIntent.action = STOP_SERVICE
+            val stopServicePendingIntent = PendingIntent.getService(
+                this, 0, stopServiceIntent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Alarm")
+                .setContentText("Wake up!")
+                .setSmallIcon(R.drawable.baseline_access_time_24)
+                .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_delete_button, "Stop", stopServicePendingIntent)
+                .setOngoing(true)
+                .build()
+
+            startForeground(1, notification)
+            ringtone.play()
+        } else if (intent?.action == STOP_SERVICE) {
+            ringtone.stop()
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        }
         return START_NOT_STICKY
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopSelf()
     }
 
     private fun createNotificationChannel() {
@@ -61,5 +71,9 @@ class RingtoneService : Service() {
 
     companion object {
         private const val CHANNEL_ID = "AlarmClockForegroundService"
+        private const val INTENT_KEY = "intentAction"
+        private const val RING_FRAGMENT = "ringFragment"
+        private const val START_SERVICE = "START_SERVICE"
+        private const val STOP_SERVICE = "STOP_SERVICE"
     }
 }

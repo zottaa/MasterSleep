@@ -1,10 +1,13 @@
 package com.github.zottaa.mastersleep.main
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.navigation.fragment.NavHostFragment
+import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,5 +25,32 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+        if (intent != null) {
+            handleIntent(intent)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            handleIntent(intent)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val fragmentToOpen = intent.getStringExtra(INTENT_KEY)
+        if (fragmentToOpen == RING_FRAGMENT) {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.alarmClockRingFragment)
+        }
+    }
+
+    companion object {
+        private const val INTENT_KEY = "intentAction"
+        private const val RING_FRAGMENT = "ringFragment"
+        private const val STOP_ACTION = "STOP"
+        private const val SNOOZE_ACTION = "SNOOZE"
     }
 }
