@@ -30,6 +30,7 @@
             </intent-filter>
         </activity>
         <receiver android:name=".alarmclock.schedule.AlarmClockReceiver" />
+        <receiver android:name=".alarmclock.ring.RingtoneServiceActionsReceiver" />
         <service
             android:name=".alarmclock.ringtone.RingtoneService"
             android:foregroundServiceType="mediaPlayback" />

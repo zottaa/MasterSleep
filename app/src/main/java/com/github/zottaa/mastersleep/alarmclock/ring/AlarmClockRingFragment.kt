@@ -25,7 +25,7 @@ class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
                 AlarmClockRingFragmentDirections.actionAlarmClockRingFragmentToAlarmClockScheduleFragment(
                     LocalDateTime
                         .now()
-                        .plusMinutes(1)
+                        .plusMinutes(5)
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()
@@ -38,7 +38,7 @@ class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
     }
 
     override fun onDestroyView() {
-        requireContext().let {
+        requireContext().also {
             Intent(it, RingtoneService::class.java).also { intent ->
                 intent.action = STOP_SERVICE
                 it.startService(intent)

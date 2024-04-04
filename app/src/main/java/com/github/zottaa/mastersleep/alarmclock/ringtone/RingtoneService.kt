@@ -10,6 +10,7 @@ import android.media.RingtoneManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.github.zottaa.mastersleep.R
+import com.github.zottaa.mastersleep.alarmclock.ring.RingtoneServiceActionsReceiver
 import com.github.zottaa.mastersleep.main.MainActivity
 
 class RingtoneService : Service() {
@@ -33,11 +34,18 @@ class RingtoneService : Service() {
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
-            val stopServiceIntent = Intent(this, RingtoneService::class.java)
-            stopServiceIntent.action = STOP_SERVICE
-            val stopServicePendingIntent = PendingIntent.getService(
-                this, 0, stopServiceIntent,
-                PendingIntent.FLAG_IMMUTABLE
+            val stopIntent = Intent(this, RingtoneServiceActionsReceiver::class.java)
+            stopIntent.action = STOP_ACTION
+            val stopPendingIntent = PendingIntent.getBroadcast(
+                this, 0, stopIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
+            val snoozeIntent = Intent(this, RingtoneServiceActionsReceiver::class.java)
+            snoozeIntent.action = SNOOZE_ACTION
+            val snoozePendingIntent = PendingIntent.getBroadcast(
+                this, 0, snoozeIntent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
@@ -45,7 +53,8 @@ class RingtoneService : Service() {
                 .setContentText("Wake up!")
                 .setSmallIcon(R.drawable.baseline_access_time_24)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_delete_button, "Stop", stopServicePendingIntent)
+                .addAction(R.drawable.ic_delete_button, "Stop", stopPendingIntent)
+                .addAction(R.drawable.baseline_access_time_24, "Snooze", snoozePendingIntent)
                 .setOngoing(true)
                 .build()
 
@@ -75,5 +84,7 @@ class RingtoneService : Service() {
         private const val RING_FRAGMENT = "ringFragment"
         private const val START_SERVICE = "START_SERVICE"
         private const val STOP_SERVICE = "STOP_SERVICE"
+        private const val SNOOZE_ACTION = "snooze"
+        private const val STOP_ACTION = "stop"
     }
 }

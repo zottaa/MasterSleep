@@ -51,7 +51,8 @@
         android:label="AlarmClockScheduleFragment">
         <argument
             android:name="time"
-            app:argType="long" />
+            app:argType="long"
+            android:defaultValue="-1L"/>
     </fragment>
     <fragment
         android:id="@+id/alarmClockRingFragment"

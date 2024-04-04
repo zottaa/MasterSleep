@@ -17,14 +17,16 @@ import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockScheduleBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding>(), MenuProvider {
     private val args: AlarmClockScheduleFragmentArgs by navArgs()
     private lateinit var schedule: AlarmClockSchedule
+    private var alarmClockTime by Delegates.notNull<Long>()
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            schedule.cancel(AlarmItem(args.time))
+            schedule.cancel(AlarmItem(alarmClockTime))
             findNavController().popBackStack()
         }
     }
@@ -50,7 +52,11 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
         binding.cancelAlarmButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        schedule.schedule(AlarmItem(args.time))
+        alarmClockTime = if (args.time == DEFAULT_VALUE)
+            requireArguments().getLong(NEW_ALARM_TIME)
+        else
+            args.time
+        schedule.schedule(AlarmItem(alarmClockTime))
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -65,5 +71,10 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
             }
         }
         return false
+    }
+
+    companion object {
+        private const val NEW_ALARM_TIME = "newAlarmTime"
+        private const val DEFAULT_VALUE = -1L
     }
 }

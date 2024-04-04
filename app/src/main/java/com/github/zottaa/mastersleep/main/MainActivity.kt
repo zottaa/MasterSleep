@@ -38,19 +38,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleIntent(intent: Intent) {
-        val fragmentToOpen = intent.getStringExtra(INTENT_KEY)
-        if (fragmentToOpen == RING_FRAGMENT) {
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-            val navController = navHostFragment.navController
-            navController.navigate(R.id.alarmClockRingFragment)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        when (intent.getStringExtra(INTENT_NAVIGATION_KEY)) {
+            RING_FRAGMENT -> navController.navigate(R.id.alarmClockRingFragment)
+            SCHEDULE_FRAGMENT -> {
+                val scheduleFragmentArgs = Bundle().apply {
+                    putLong(NEW_ALARM_TIME, intent.getLongExtra(NEW_ALARM_TIME, 0))
+                }
+                navController.navigate(R.id.alarmClockScheduleFragment, scheduleFragmentArgs)
+            }
+            DIARY_LIST_FRAGMENT -> navController.navigate(R.id.diaryListFragment)
         }
     }
 
     companion object {
-        private const val INTENT_KEY = "intentAction"
+        private const val NEW_ALARM_TIME = "newAlarmTime"
+        private const val INTENT_NAVIGATION_KEY = "intentAction"
         private const val RING_FRAGMENT = "ringFragment"
-        private const val STOP_ACTION = "STOP"
-        private const val SNOOZE_ACTION = "SNOOZE"
+        private const val SCHEDULE_FRAGMENT = "scheduleFragment"
+        private const val DIARY_LIST_FRAGMENT = "diaryListFragment"
     }
 }
