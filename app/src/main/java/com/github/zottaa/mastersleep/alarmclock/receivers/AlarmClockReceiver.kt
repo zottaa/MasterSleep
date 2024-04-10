@@ -1,4 +1,4 @@
-package com.github.zottaa.mastersleep.alarmclock.schedule
+package com.github.zottaa.mastersleep.alarmclock.receivers
 
 import android.content.BroadcastReceiver
 import android.content.Context

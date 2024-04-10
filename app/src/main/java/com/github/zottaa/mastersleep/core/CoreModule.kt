@@ -2,6 +2,7 @@ package com.github.zottaa.mastersleep.core
 
 import android.content.Context
 import androidx.room.Room
+import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -20,6 +21,10 @@ abstract class CoreModule {
     @Binds
     @Singleton
     abstract fun bindNow(now: Now.Base): Now
+
+    @Binds
+    @Singleton
+    abstract fun bindAlarmClockScheduler(scheduler: AlarmClockSchedule.Base): AlarmClockSchedule
 
     companion object {
         @Singleton

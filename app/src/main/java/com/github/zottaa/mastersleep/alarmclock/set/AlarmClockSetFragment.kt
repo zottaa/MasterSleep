@@ -47,8 +47,9 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         }
 
         binding.startAlarmButton.setOnClickListener {
+            viewModel.scheduleAlarm(DateFormat.is24HourFormat(requireContext()))
             findNavController().navigate(
-                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment(viewModel.alarmTimeInLong(DateFormat.is24HourFormat(requireContext())))
+                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
             )
         }
 
@@ -73,19 +74,31 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.selectedTimeLiveData.collect {
-                    binding.textClockAlarm.text = it
+                launch {
+                    viewModel.selectedTime.collect {
+                        binding.textClockAlarm.text = it
+                    }
+                }
+                launch {
+                    viewModel.isAlarmAlreadyScheduled.collect {
+                        if (it)
+                            findNavController().navigate(
+                                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
+                            )
+                    }
                 }
             }
         }
-
-        viewModel.init(DateFormat.is24HourFormat(requireContext()))
-
         if (savedInstanceState != null) {
             viewModel.restore(
                 BundleWrapper.String(savedInstanceState)
             )
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.init(DateFormat.is24HourFormat(requireContext()))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

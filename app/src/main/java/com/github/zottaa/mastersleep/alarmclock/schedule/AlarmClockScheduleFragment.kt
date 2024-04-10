@@ -11,23 +11,27 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockScheduleBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding>(), MenuProvider {
-    private val args: AlarmClockScheduleFragmentArgs by navArgs()
-    private lateinit var schedule: AlarmClockSchedule
-    private var alarmClockTime by Delegates.notNull<Long>()
+    private val viewModel: AlarmClockScheduleViewModel by viewModels()
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            schedule.cancel(AlarmItem(alarmClockTime))
-            findNavController().popBackStack()
+            viewModel.cancel()
+            findNavController().navigate(R.id.clockSetFragment)
         }
     }
 
@@ -38,7 +42,6 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        schedule = AlarmClockSchedule.Base(requireContext())
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             onBackPressedCallback
@@ -52,11 +55,20 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
         binding.cancelAlarmButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        alarmClockTime = if (args.time == DEFAULT_VALUE)
-            requireArguments().getLong(NEW_ALARM_TIME)
-        else
-            args.time
-        schedule.schedule(AlarmItem(alarmClockTime))
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isAlarmAlreadyPlayed.collect {
+                    if (it)
+                        findNavController().navigate(R.id.clockSetFragment)
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.schedule()
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -71,10 +83,5 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
             }
         }
         return false
-    }
-
-    companion object {
-        private const val NEW_ALARM_TIME = "newAlarmTime"
-        private const val DEFAULT_VALUE = -1L
     }
 }

@@ -22,6 +22,13 @@ class MainActivity : AppCompatActivity() {
                 0
             )
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM),
+                0
+            )
+        }
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -43,21 +50,11 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         when (intent.getStringExtra(INTENT_NAVIGATION_KEY)) {
             RING_FRAGMENT -> navController.navigate(R.id.alarmClockRingFragment)
-            SCHEDULE_FRAGMENT -> {
-                val scheduleFragmentArgs = Bundle().apply {
-                    putLong(NEW_ALARM_TIME, intent.getLongExtra(NEW_ALARM_TIME, 0))
-                }
-                navController.navigate(R.id.alarmClockScheduleFragment, scheduleFragmentArgs)
-            }
-            DIARY_LIST_FRAGMENT -> navController.navigate(R.id.diaryListFragment)
         }
     }
 
     companion object {
-        private const val NEW_ALARM_TIME = "newAlarmTime"
         private const val INTENT_NAVIGATION_KEY = "intentAction"
         private const val RING_FRAGMENT = "ringFragment"
-        private const val SCHEDULE_FRAGMENT = "scheduleFragment"
-        private const val DIARY_LIST_FRAGMENT = "diaryListFragment"
     }
 }

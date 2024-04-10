@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockRingBinding
@@ -15,22 +17,15 @@ import java.time.ZoneId
 
 @AndroidEntryPoint
 class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
+    private val viewModel: AlarmClockRingViewModel by viewModels()
     override fun bind(inflater: LayoutInflater, container: ViewGroup?) =
         FragmentClockRingBinding.inflate(inflater, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.snoozeButton.setOnClickListener {
-            findNavController().navigate(
-                AlarmClockRingFragmentDirections.actionAlarmClockRingFragmentToAlarmClockScheduleFragment(
-                    LocalDateTime
-                        .now()
-                        .plusMinutes(5)
-                        .atZone(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli()
-                )
-            )
+            viewModel.snooze()
+            findNavController().navigate(R.id.clockSetFragment)
         }
         binding.stopButton.setOnClickListener {
             findNavController().navigate(AlarmClockRingFragmentDirections.actionAlarmClockRingFragmentToDiaryListFragment())

@@ -1,21 +1,31 @@
-package com.github.zottaa.mastersleep.alarmclock.ring
+package com.github.zottaa.mastersleep.alarmclock.receivers
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
 import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmItem
 import com.github.zottaa.mastersleep.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 @AndroidEntryPoint
-class RingtoneServiceActionsReceiver : BroadcastReceiver() {
+class RingtoneServiceActionsReceiver(
+
+) : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null && intent != null) {
+
             val stopServiceIntent = Intent(context, RingtoneService::class.java).apply {
                 action = STOP_SERVICE
             }
@@ -27,15 +37,19 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
 
             val navigationIntent = Intent(context, MainActivity::class.java)
             when (intent.action) {
-                STOP_ACTION -> setupStopActionIntent(navigationIntent)
                 SNOOZE_ACTION -> {
+                    val alarmDataStoreManager = AlarmDataStoreManager(context)
+                    val alarmClockSchedule = AlarmClockSchedule.Base(context)
                     val newAlarmTime = LocalDateTime.now()
-                        .plusMinutes(1)
+                        .plusMinutes(5)
+                        .withSecond(0)
                         .atZone(ZoneId.systemDefault())
                         .toInstant()
                         .toEpochMilli()
-                    setupSnoozeActionIntent(navigationIntent, newAlarmTime)
-                    AlarmClockSchedule.Base(context).schedule(AlarmItem(newAlarmTime))
+                    goAsync {
+                        alarmDataStoreManager.setAlarm(newAlarmTime)
+                    }
+                    alarmClockSchedule.schedule(AlarmItem(newAlarmTime))
                 }
             }
             val pendingIntent = PendingIntent.getActivity(
@@ -46,25 +60,23 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun setupStopActionIntent(intent: Intent) {
-        intent.putExtra(INTENT_KEY, DIARY_LIST_FRAGMENT)
-    }
-
-    private fun setupSnoozeActionIntent(intent: Intent, newAlarmTime: Long) {
-        intent.putExtra(INTENT_KEY, SCHEDULE_FRAGMENT)
-        intent.putExtra(
-            NEW_ALARM_TIME,
-            newAlarmTime
-        )
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun goAsync(
+        context: CoroutineContext = EmptyCoroutineContext,
+        block: suspend CoroutineScope.() -> Unit
+    ) {
+        val pendingResult = goAsync()
+        GlobalScope.launch(context) {
+            try {
+                block()
+            } finally {
+                pendingResult.finish()
+            }
+        }
     }
 
     companion object {
-        private const val INTENT_KEY = "intentAction"
-        private const val SCHEDULE_FRAGMENT = "scheduleFragment"
-        private const val NEW_ALARM_TIME = "newAlarmTime"
-        private const val DIARY_LIST_FRAGMENT = "diaryListFragment"
         private const val STOP_SERVICE = "STOP_SERVICE"
         private const val SNOOZE_ACTION = "snooze"
-        private const val STOP_ACTION = "stop"
     }
 }
