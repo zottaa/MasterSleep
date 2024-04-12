@@ -5,6 +5,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.github.zottaa.mastersleep.alarmclock.receivers.AlarmClockReceiver
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -18,20 +19,26 @@ interface AlarmClockSchedule {
     ) : AlarmClockSchedule {
         private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
-        @SuppressLint("ScheduleExactAlarm")
         override fun schedule(item: AlarmItem) {
-            alarmManager.setAlarmClock(
-                AlarmManager.AlarmClockInfo(
-                    item.triggerTime,
-                    null
-                ),
-                PendingIntent.getBroadcast(
-                    context,
-                    item.hashCode(),
-                    Intent(context, AlarmClockReceiver::class.java),
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    alarmManager.canScheduleExactAlarms()
+                } else {
+                    true
+                }
+            ) {
+                alarmManager.setAlarmClock(
+                    AlarmManager.AlarmClockInfo(
+                        item.triggerTime,
+                        null
+                    ),
+                    PendingIntent.getBroadcast(
+                        context,
+                        item.hashCode(),
+                        Intent(context, AlarmClockReceiver::class.java),
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
                 )
-            )
+            }
         }
 
         override fun cancel(item: AlarmItem) {

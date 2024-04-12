@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.IBinder
@@ -24,11 +25,16 @@ class RingtoneService : Service() {
         super.onCreate()
         val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
+        ringtone.audioAttributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ALARM)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .build()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == START_SERVICE) {
             createNotificationChannel()
+            println(ringtone)
             val notificationIntent = Intent(this, MainActivity::class.java)
             notificationIntent.putExtra(INTENT_KEY, RING_FRAGMENT)
             val pendingIntent = PendingIntent.getActivity(

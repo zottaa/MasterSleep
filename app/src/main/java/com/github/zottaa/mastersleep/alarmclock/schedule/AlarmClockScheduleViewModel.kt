@@ -23,17 +23,17 @@ class AlarmClockScheduleViewModel @Inject constructor(
     private val alarmClockSchedule: AlarmClockSchedule,
     private val now: Now
 ) : ViewModel() {
-    val isAlarmAlreadyPlayed: StateFlow<Boolean>
-        get() = _isAlarmAlreadyPlayed
-    private val _isAlarmAlreadyPlayed: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    val navigateToSetScreen: StateFlow<Boolean>
+        get() = _navigateToSetScreen
+    private val _navigateToSetScreen: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     fun schedule() {
         viewModelScope.launch(dispatcher) {
             val alarmTime = alarmDataStoreManager.readAlarm().first()
-            if (alarmTime < now.timeInMillis())
-                _isAlarmAlreadyPlayed.emit(true)
-            else
+            if (alarmTime < now.timeInMillis()) {
+                _navigateToSetScreen.emit(true)
+            } else
                 alarmClockSchedule.schedule(AlarmItem(alarmTime))
         }
     }
@@ -43,6 +43,7 @@ class AlarmClockScheduleViewModel @Inject constructor(
             val alarmTime = alarmDataStoreManager.readAlarm().first()
             alarmClockSchedule.cancel(AlarmItem(alarmTime))
             alarmDataStoreManager.setAlarm(0L)
+            _navigateToSetScreen.emit(true)
         }
     }
 

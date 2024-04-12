@@ -31,7 +31,6 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             viewModel.cancel()
-            findNavController().navigate(R.id.clockSetFragment)
         }
     }
 
@@ -58,7 +57,7 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isAlarmAlreadyPlayed.collect {
+                viewModel.navigateToSetScreen.collect {
                     if (it)
                         findNavController().navigate(R.id.clockSetFragment)
                 }

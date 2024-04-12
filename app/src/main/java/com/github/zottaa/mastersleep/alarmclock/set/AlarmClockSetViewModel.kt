@@ -7,6 +7,7 @@ import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.core.Now
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -37,6 +38,10 @@ class AlarmClockSetViewModel @Inject constructor(
         get() = _isAlarmAlreadyScheduled
     private val _isAlarmAlreadyScheduled: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
+    val navigateToSchedule: StateFlow<Boolean>
+        get() = _navigateToSchedule
+    private val _navigateToSchedule: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     fun init(is24HourFormat: Boolean) {
         viewModelScope.launch(dispatcher) {
             setAlarmTime(LocalTime.now().hour, LocalTime.now().minute, is24HourFormat)
@@ -49,6 +54,7 @@ class AlarmClockSetViewModel @Inject constructor(
     fun scheduleAlarm(is24HourFormat: Boolean) {
         viewModelScope.launch(dispatcher) {
             alarmDataStoreManager.setAlarm(alarmTimeInLong(is24HourFormat))
+            _navigateToSchedule.emit(true)
         }
     }
 

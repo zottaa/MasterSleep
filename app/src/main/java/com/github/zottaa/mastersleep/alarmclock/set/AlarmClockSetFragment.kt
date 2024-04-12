@@ -1,10 +1,24 @@
 package com.github.zottaa.mastersleep.alarmclock.set
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,8 +41,43 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
 
     private val viewModel: AlarmClockSetViewModel by viewModels()
 
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
+        requestPermissionLauncher =
+            registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions(
+                )
+            ) { permissions ->
+                val allPermissionGranted = permissions.all { it.value }
+                if (allPermissionGranted) {
+                    startAlarmClock()
+                } else {
+                    permissions.entries.forEach { entry ->
+                        val permission = entry.key
+                        val isGranted = entry.value
+                        val permissionDialogProvide by lazy {
+                            PermissionDialogProvide.Base(
+                                requireActivity(),
+                                requireContext()
+                            )
+                        }
+                        if (!isGranted && !ActivityCompat.shouldShowRequestPermissionRationale(
+                                requireActivity(),
+                                permission
+                            )
+                        ) {
+                            permissionDialogProvide.showPermissionDenialDialog(
+                                permission
+                            )
+                            return@registerForActivityResult
+                        }
+                    }
+                    requestRuntimePermission(requestPermissionLauncher)
+                }
+            }
         binding.setAlarmTimeButton.setOnClickListener {
             val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
             val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
@@ -47,10 +96,7 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         }
 
         binding.startAlarmButton.setOnClickListener {
-            viewModel.scheduleAlarm(DateFormat.is24HourFormat(requireContext()))
-            findNavController().navigate(
-                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
-            )
+            requestRuntimePermission(requestPermissionLauncher)
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
@@ -87,6 +133,15 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                             )
                     }
                 }
+                launch {
+                    viewModel.navigateToSchedule.collect {
+                        if (it) {
+                            findNavController().navigate(
+                                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
+                            )
+                        }
+                    }
+                }
             }
         }
         if (savedInstanceState != null) {
@@ -95,6 +150,58 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
             )
         }
     }
+
+
+    private fun requestRuntimePermission(activityResultLauncher: ActivityResultLauncher<Array<String>>) {
+        val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                POST_NOTIFICATIONS,
+                ACTIVITY_RECOGNITION
+            )
+        } else {
+            arrayOf(ACTIVITY_RECOGNITION)
+        }
+
+        when {
+            permissionsToRequest.all {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            } -> {
+                startAlarmClock()
+            }
+
+            permissionsToRequest.any {
+                ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), it)
+            } -> {
+                val permissionDialogProvide by lazy {
+                    PermissionDialogProvide.Base(
+                        requireActivity(),
+                        requireContext()
+                    )
+                }
+                permissionsToRequest.forEach { permission ->
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(
+                            requireActivity(),
+                            permission
+                        )
+                    )
+                        permissionDialogProvide.showPermissionRationaleDialog(
+                            activityResultLauncher,
+                            permission
+                        )
+                }
+            }
+
+            else -> activityResultLauncher.launch(permissionsToRequest)
+        }
+    }
+
+    private fun startAlarmClock() {
+        viewModel.scheduleAlarm(DateFormat.is24HourFormat(requireContext()))
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -106,5 +213,11 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         viewModel.save(
             BundleWrapper.String(outState)
         )
+    }
+
+    companion object {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+        private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
+        private const val ACTIVITY_RECOGNITION = Manifest.permission.ACTIVITY_RECOGNITION
     }
 }

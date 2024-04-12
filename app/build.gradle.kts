@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.zottaa.mastersleep"
-        minSdk = 28
+        minSdk = 29
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,8 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
     implementation("androidx.activity:activity-ktx:1.8.2")
+
+    implementation ("com.google.android.gms:play-services-location:21.2.0")
 
     implementation ("androidx.datastore:datastore-preferences:1.0.0")
 
