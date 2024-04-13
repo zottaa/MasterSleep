@@ -45,7 +45,6 @@
             android:name=".alarmclock.receivers.SleepReceiver"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name=".alarmclock.ringtone.RingtoneService"
             android:foregroundServiceType="mediaPlayback" />

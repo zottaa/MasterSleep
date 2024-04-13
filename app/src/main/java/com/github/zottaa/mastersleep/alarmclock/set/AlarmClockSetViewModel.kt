@@ -7,16 +7,11 @@ import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.core.Now
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -77,8 +72,10 @@ class AlarmClockSetViewModel @Inject constructor(
         } else {
             DateTimeFormatter.ofPattern("hh:mm a")
         }
-        val localDate = LocalDate.now()
+
         val localTime = LocalTime.parse(_selectedTime.value, formatter)
+        val localDate =
+            if (localTime > LocalTime.now()) LocalDate.now() else LocalDate.now().plusDays(1)
         val localDateTime = localDate.atTime(localTime)
         return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }

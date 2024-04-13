@@ -20,9 +20,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @AndroidEntryPoint
-class RingtoneServiceActionsReceiver(
-
-) : BroadcastReceiver() {
+class RingtoneServiceActionsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null && intent != null) {
 

@@ -13,9 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.alarmclock.receivers.RingtoneServiceActionsReceiver
 import com.github.zottaa.mastersleep.main.MainActivity
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class RingtoneService : Service() {
     private lateinit var ringtone: Ringtone
     override fun onBind(intent: Intent?): IBinder? = null
@@ -34,7 +32,6 @@ class RingtoneService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == START_SERVICE) {
             createNotificationChannel()
-            println(ringtone)
             val notificationIntent = Intent(this, MainActivity::class.java)
             notificationIntent.putExtra(INTENT_KEY, RING_FRAGMENT)
             val pendingIntent = PendingIntent.getActivity(

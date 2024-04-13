@@ -3,6 +3,7 @@ package com.github.zottaa.mastersleep.core
 import android.content.Context
 import androidx.room.Room
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
+import com.github.zottaa.mastersleep.alarmclock.schedule.SleepRequestManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -16,7 +17,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class CoreModule {
+abstract class AppModule {
+    @Binds
+    @Singleton
+    abstract fun bindAlarmClockScheduler(scheduler: AlarmClockSchedule.Base): AlarmClockSchedule
 
     @Binds
     @Singleton
@@ -24,9 +28,17 @@ abstract class CoreModule {
 
     @Binds
     @Singleton
-    abstract fun bindAlarmClockScheduler(scheduler: AlarmClockSchedule.Base): AlarmClockSchedule
+    abstract fun bindSleepRequestManager(sleepRequestManager: SleepRequestManager.Base): SleepRequestManager.All
 
     companion object {
+        @Provides
+        @Named("IO")
+        fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Named("Main")
+        fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
         @Singleton
         @Provides
         fun provideAppDatabase(@ApplicationContext context: Context): AppDataBase =
@@ -36,14 +48,6 @@ abstract class CoreModule {
                 "SleepMasterDatabase.db"
             )
                 .build()
-
-        @Provides
-        @Named("IO")
-        fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-        @Provides
-        @Named("Main")
-        fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
         @Provides
         @Singleton

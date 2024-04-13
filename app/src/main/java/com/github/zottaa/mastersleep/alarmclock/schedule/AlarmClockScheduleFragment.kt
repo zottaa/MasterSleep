@@ -16,17 +16,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockScheduleBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
-class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding>(), MenuProvider {
+class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding>(), MenuProvider,
+    SleepRequestManager.Unsubscribe {
     private val viewModel: AlarmClockScheduleViewModel by viewModels()
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -82,5 +80,14 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
             }
         }
         return false
+    }
+
+    override fun onDestroyView() {
+        unsubscribeFromSleepUpdates()
+        super.onDestroyView()
+    }
+
+    override fun unsubscribeFromSleepUpdates() {
+        viewModel.unsubscribeFromSleepUpdates()
     }
 }
