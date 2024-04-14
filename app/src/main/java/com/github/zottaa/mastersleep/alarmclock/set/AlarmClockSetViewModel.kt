@@ -49,6 +49,7 @@ class AlarmClockSetViewModel @Inject constructor(
     fun scheduleAlarm(is24HourFormat: Boolean) {
         viewModelScope.launch(dispatcher) {
             alarmDataStoreManager.setAlarm(alarmTimeInLong(is24HourFormat))
+            alarmDataStoreManager.setStartTime(now.timeInMillis())
             _navigateToSchedule.emit(true)
         }
     }

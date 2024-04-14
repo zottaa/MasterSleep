@@ -3,6 +3,7 @@ package com.github.zottaa.mastersleep.alarmclock.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
+import com.github.zottaa.mastersleep.alarmclock.core.SubscribeDataStoreManager
 import com.github.zottaa.mastersleep.core.Now
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +21,8 @@ class AlarmClockScheduleViewModel @Inject constructor(
     private val alarmDataStoreManager: AlarmDataStoreManager,
     private val alarmClockSchedule: AlarmClockSchedule,
     private val now: Now,
-    private val sleepRequestManager: SleepRequestManager.All
+    private val sleepRequestManager: SleepRequestManager.All,
+    private val subscribeDataStoreManager: SubscribeDataStoreManager
 ) : ViewModel(), SleepRequestManager.Unsubscribe {
 
     val navigateToSetScreen: StateFlow<Boolean>
@@ -35,6 +37,7 @@ class AlarmClockScheduleViewModel @Inject constructor(
             } else {
                 alarmClockSchedule.schedule(AlarmItem(alarmTime))
                 sleepRequestManager.subscribeToSleepUpdates()
+                subscribeDataStoreManager.setSubscribeStatus(true)
             }
         }
     }
@@ -49,6 +52,9 @@ class AlarmClockScheduleViewModel @Inject constructor(
     }
 
     override fun unsubscribeFromSleepUpdates() {
-        sleepRequestManager.unsubscribeFromSleepUpdates()
+        viewModelScope.launch(dispatcher) {
+            sleepRequestManager.unsubscribeFromSleepUpdates()
+            subscribeDataStoreManager.setSubscribeStatus(false)
+        }
     }
 }

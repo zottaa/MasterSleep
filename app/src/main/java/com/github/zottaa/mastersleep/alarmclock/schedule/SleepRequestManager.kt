@@ -3,6 +3,7 @@ package com.github.zottaa.mastersleep.alarmclock.schedule
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import com.github.zottaa.mastersleep.alarmclock.receivers.SleepReceiver
 import com.google.android.gms.location.ActivityRecognition
@@ -33,17 +34,27 @@ interface SleepRequestManager {
                     Manifest.permission.ACTIVITY_RECOGNITION
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityRecognition.getClient(context)
+                val task = ActivityRecognition.getClient(context)
                     .requestSleepSegmentUpdates(
                         sleepReceiverPendingIntent,
                         SleepSegmentRequest.getDefaultSleepSegmentRequest()
                     )
+                task.addOnSuccessListener {
+                    Log.d(TAG, "Subscribed")
+                }
             }
         }
 
         override fun unsubscribeFromSleepUpdates() {
-            ActivityRecognition.getClient(context)
+            val task = ActivityRecognition.getClient(context)
                 .removeSleepSegmentUpdates(sleepReceiverPendingIntent)
+            task.addOnSuccessListener {
+                Log.d(TAG, "Unsubscribed")
+            }
         }
+    }
+
+    companion object {
+        private const val TAG = "SLEEP"
     }
 }
