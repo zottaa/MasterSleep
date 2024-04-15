@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.github.zottaa.mastersleep.databinding.CalendarItemBinding
 import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 class CalendarAdapter(
     private val selectDay: SelectDay,
@@ -51,7 +53,8 @@ class CalendarViewHolder(
     fun hold(days: ArrayList<LocalDate>, position: Int, selectedDate: LocalDate) {
         val day = days[position]
 
-        binding.calendarItemDayName.text = day.dayOfWeek.toString().subSequence(0, 3)
+        binding.calendarItemDayName.text =
+            day.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
         binding.calendarItemDayNumber.text = day.dayOfMonth.toString()
 
         if (day.isEqual(selectedDate)) {

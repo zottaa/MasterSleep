@@ -1,14 +1,9 @@
 package com.github.zottaa.mastersleep.alarmclock.set
 
 import android.Manifest
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -107,11 +102,16 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     )
                     true
                 }
-
                 R.id.action_clock -> {
                     true
                 }
 
+                R.id.action_settings -> {
+                    findNavController().navigate(
+                        AlarmClockSetFragmentDirections.actionClockSetFragmentToSettingsFragment()
+                    )
+                    true
+                }
                 else -> {
                     false
                 }

@@ -17,4 +17,25 @@
     <string name="set_alarm">Set Alarm</string>
     <string name="cancel_button">Cancel</string>
     <string name="start_alarm">Start Alarm</string>
+    <string name="rationale_dialog_post_notification">This app require post notification permission
+        for alarm clock operation .</string>
+    <string name="rationale_dialog_activity_recognition">This app require activity recognition
+        permission to track your sleep.</string>
+    <string name="denial_dialog_post_notification">This feature is unavailable because it requires
+        post notification permission.\nPlease allow post notification permission from settings to
+        proceed further</string>
+    <string name="denial_dialog_activity_recognition">This feature is unavailable because it
+        requires activity recognition permission.\nPlease allow activity recognition permission from
+        settings to proceed further</string>
+    <string name="permission_required">Permission required!</string>
+    <string name="unknown_permission">Unknown permission: %1$s</string>
+    <string name="ok">OK</string>
+    <string name="settings">Settings</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="default_item">Default</string>
+    <string name="english">English</string>
+    <string name="russian">Russian</string>
+    <string name="language">Language</string>
+    <string name="theme">Theme</string>
 </resources>

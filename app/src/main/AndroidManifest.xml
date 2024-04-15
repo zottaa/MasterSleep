@@ -41,6 +41,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
@@ -48,6 +49,7 @@
             android:name=".alarmclock.receivers.SleepReceiver"
             android:enabled="true"
             android:exported="true" />
+
         <service
             android:name=".alarmclock.ringtone.RingtoneService"
             android:foregroundServiceType="mediaPlayback" />

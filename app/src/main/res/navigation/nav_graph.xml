@@ -17,6 +17,12 @@
         <action
             android:id="@+id/action_diaryListFragment_to_clockSetFragment"
             app:destination="@id/clockSetFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_clockSetFragment2"
+            app:destination="@id/clockSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryCreateFragment"
@@ -44,6 +50,12 @@
         <action
             android:id="@+id/action_clockSetFragment_to_alarmClockScheduleFragment"
             app:destination="@id/alarmClockScheduleFragment" />
+        <action
+            android:id="@+id/action_clockSetFragment_to_diaryListFragment"
+            app:destination="@id/diaryListFragment" />
+        <action
+            android:id="@+id/action_clockSetFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/alarmClockScheduleFragment"
@@ -62,5 +74,19 @@
             app:destination="@id/alarmClockScheduleFragment"
             app:popUpTo="@id/alarmClockRingFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_alarmClockRingFragment_to_clockSetFragment"
+            app:destination="@id/clockSetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.github.zottaa.mastersleep.settings.SettingsFragment"
+        android:label="SettingsFragment">
+        <action
+            android:id="@+id/action_settingsFragment_to_diaryListFragment"
+            app:destination="@id/diaryListFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_clockSetFragment"
+            app:destination="@id/clockSetFragment" />
     </fragment>
 </navigation>

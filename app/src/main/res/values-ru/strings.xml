@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MasterSleep</string>
+    <string name="mondayTextView">ПН</string>
+    <string name="tuesdayTextView">ВТ</string>
+    <string name="wednesdayTextView">СР</string>
+    <string name="thursdayTextView">ЧТ</string>
+    <string name="fridayTextView">ПТ</string>
+    <string name="saturdayTextView">СБ</string>
+    <string name="sundayTextView">ВС</string>
+    <string name="hint_title">Название</string>
+    <string name="content_description_add">Добавить</string>
+    <string name="content_description_delete">Удалить</string>
+    <string name="item_navigation_diary">Дневник</string>
+    <string name="item_navigation_clock">Часы</string>
+    <string name="now">Сейчас</string>
+    <string name="alarm">Будильник</string>
+    <string name="set_alarm">Установить будильник</string>
+    <string name="cancel_button">Отмена</string>
+    <string name="start_alarm">Запустить будильник</string>
+    <string name="rationale_dialog_post_notification">Для работы будильника этому приложению требуется разрешение на отправку уведомлений.</string>
+    <string name="rationale_dialog_activity_recognition">Для отслеживания сна этому приложению требуется разрешение на распознавание активности.</string>
+    <string name="denial_dialog_post_notification">Эта функция недоступна, поскольку требует разрешение на отправку уведомлений. Пожалуйста, разрешите это в настройках, чтобы продолжить.</string>
+    <string name="denial_dialog_activity_recognition">Эта функция недоступна, поскольку требует разрешение на распознавание активности. Пожалуйста, разрешите это в настройках, чтобы продолжить.</string>
+    <string name="permission_required">Требуется разрешение!</string>
+    <string name="unknown_permission">Неизвестное разрешение: %1$s</string>
+    <string name="ok">ОК</string>
+    <string name="settings">Настройки</string>
+    <string name="light">Светлая</string>
+    <string name="dark">Темная</string>
+    <string name="default_item">Системная</string>
+    <string name="english">Английский</string>
+    <string name="russian">Русский</string>
+    <string name="language">Язык</string>
+    <string name="theme">Тема</string>
+</resources>

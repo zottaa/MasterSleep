@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @AndroidEntryPoint
 class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
@@ -39,6 +40,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
             })
         binding.calendarRecyclerView.adapter = calendarAdapter
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
+        binding.calendarRecyclerView.addItemDecoration(GridItemDecoration(14))
 
         val noteAdapter = NotesAdapter(
             object : EditNote {
@@ -68,6 +70,13 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                     true
                 }
 
+                R.id.action_settings -> {
+                    findNavController().navigate(
+                        DiaryListFragmentDirections.actionDiaryListFragmentToSettingsFragment()
+                    )
+                    true
+                }
+
                 else -> {
                     false
                 }
@@ -80,7 +89,10 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                     viewModel.selectedDate.collect {
                         calendarAdapter.updateDate(it)
                         binding.currentMonthYearTextView.text =
-                            it.format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+                            it.format(
+                                DateTimeFormatter.ofPattern("MMM yyyy")
+                                    .withLocale(Locale.getDefault())
+                            )
                     }
                 }
                 launch {

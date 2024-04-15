@@ -20,9 +20,7 @@ class DiaryListViewModel @Inject constructor(
     private val dateUtils: DateUtils,
     private val repository: NotesRepository.ReadList,
     @Named("IO")
-    private val dispatcher: CoroutineDispatcher,
-    @Named("Main")
-    private val dispatcherMain: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher
 ) : ViewModel(), SelectDay {
 
     val week: StateFlow<ArrayList<LocalDate>>

@@ -10,4 +10,8 @@
         android:title="@string/item_navigation_clock"
         android:icon="@drawable/baseline_access_time_24"
         />
+    <item
+        android:id="@+id/action_settings"
+        android:title="@string/settings"
+        android:icon="@drawable/baseline_settings_24" />
 </menu>
