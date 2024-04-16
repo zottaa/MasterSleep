@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Locale
 import javax.inject.Inject
 
 private val Context.dataStore by preferencesDataStore("settings")
@@ -29,7 +30,9 @@ class SettingsDataStoreManager @Inject constructor(
 
     fun readLanguage(): Flow<Languages> =
         settingsDataStore.data.map { settings ->
-            Languages.getByValue(settings[FIELD_LANGUAGE] ?: 0)
+            val defaultLocale =
+                Languages.getByLocaleTag(Locale.getDefault().toLanguageTag())?.code ?: 0
+            Languages.getByValue(settings[FIELD_LANGUAGE] ?: defaultLocale)
         }
 
     fun readTheme(): Flow<Themes> =

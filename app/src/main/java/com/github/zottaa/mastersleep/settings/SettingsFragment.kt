@@ -28,6 +28,8 @@ class SettingsFragment : AbstractFragment<FragmentSettingsBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
+
+        binding.bottomNavigation.selectedItemId = R.id.action_settings
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.action_diary -> {
@@ -45,6 +47,13 @@ class SettingsFragment : AbstractFragment<FragmentSettingsBinding>() {
                 }
 
                 R.id.action_settings -> {
+                    true
+                }
+
+                R.id.action_statistic -> {
+                    findNavController().navigate(
+                        SettingsFragmentDirections.actionSettingsFragmentToPagerFragment()
+                    )
                     true
                 }
 

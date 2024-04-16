@@ -94,6 +94,7 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
             requestRuntimePermission(requestPermissionLauncher)
         }
 
+        binding.bottomNavigation.selectedItemId = R.id.action_clock
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.action_diary -> {
@@ -102,6 +103,7 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     )
                     true
                 }
+
                 R.id.action_clock -> {
                     true
                 }
@@ -112,6 +114,14 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     )
                     true
                 }
+
+                R.id.action_statistic -> {
+                    findNavController().navigate(
+                        AlarmClockSetFragmentDirections.actionClockSetFragmentToPagerFragment()
+                    )
+                    true
+                }
+
                 else -> {
                     false
                 }

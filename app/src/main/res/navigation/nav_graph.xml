@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/diaryListFragment">
+    app:startDestination="@id/clockSetFragment">
 
     <fragment
         android:id="@+id/diaryListFragment"
@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_diaryListFragment_to_clockSetFragment2"
             app:destination="@id/clockSetFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_pagerFragment"
+            app:destination="@id/pagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryCreateFragment"
@@ -56,6 +59,9 @@
         <action
             android:id="@+id/action_clockSetFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_clockSetFragment_to_pagerFragment"
+            app:destination="@id/pagerFragment" />
     </fragment>
     <fragment
         android:id="@+id/alarmClockScheduleFragment"
@@ -88,5 +94,22 @@
         <action
             android:id="@+id/action_settingsFragment_to_clockSetFragment"
             app:destination="@id/clockSetFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_pagerFragment"
+            app:destination="@id/pagerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pagerFragment"
+        android:name="com.github.zottaa.mastersleep.statistic.pager.PagerFragment"
+        android:label="PagerFragment">
+        <action
+            android:id="@+id/action_pagerFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_pagerFragment_to_clockSetFragment"
+            app:destination="@id/clockSetFragment" />
+        <action
+            android:id="@+id/action_pagerFragment_to_diaryListFragment"
+            app:destination="@id/diaryListFragment" />
     </fragment>
 </navigation>

@@ -1,7 +1,6 @@
 package com.github.zottaa.mastersleep.diary.core
 
 import com.github.zottaa.mastersleep.core.AppDataBase
-import com.github.zottaa.mastersleep.diary.list.DateUtils
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -26,10 +25,6 @@ abstract class NoteModule {
     abstract fun bindNotesRepositoryEdit(repository: NotesRepository.Base): NotesRepository.Edit
 
     companion object {
-        @Provides
-        @Singleton
-        fun provideDateUtils(): DateUtils = DateUtils.Base()
-
         @Provides
         @Singleton
         fun provideNotesDao(dataBase: AppDataBase) = dataBase.noteDao()

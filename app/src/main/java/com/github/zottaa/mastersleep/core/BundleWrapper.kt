@@ -41,4 +41,19 @@ interface BundleWrapper {
             private const val KEY = "stringArrayListKey"
         }
     }
+
+    class LongPair(
+        private val bundle: Bundle
+    ) : Mutable<LongArray> {
+        override fun save(item: LongArray) {
+            bundle.putLongArray(KEY, item)
+        }
+
+        override fun restore(): LongArray =
+            bundle.getLongArray(KEY) ?: LongArray(0)
+
+        companion object {
+            private const val KEY = "longPairKey"
+        }
+    }
 }

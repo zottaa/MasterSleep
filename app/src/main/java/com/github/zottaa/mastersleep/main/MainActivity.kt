@@ -38,14 +38,7 @@ class MainActivity : AppCompatActivity() {
                     viewModel.language.collect {
                         val appLocale = LocaleListCompat.forLanguageTags(it.languageTag)
                         AppCompatDelegate.setApplicationLocales(appLocale)
-                        if (it.languageTag != Locale.getDefault().toLanguageTag()
-                                .subSequence(0, 2)
-                        ) {
-                            Locale.setDefault(Locale(it.languageTag))
-                            recreate()
-                        } else {
-                            Locale.setDefault(Locale(it.languageTag))
-                        }
+                        Locale.setDefault(Locale(it.languageTag))
                     }
                 }
                 launch {

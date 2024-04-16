@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.SleepRequestManager
+import com.github.zottaa.mastersleep.statistic.pager.ProvideDatePicker
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -30,7 +31,15 @@ abstract class AppModule {
     @Singleton
     abstract fun bindSleepRequestManager(sleepRequestManager: SleepRequestManager.Base): SleepRequestManager.All
 
+    @Binds
+    @Singleton
+    abstract fun bindProvideDatePicker(provideDataPicker: ProvideDatePicker.Base): ProvideDatePicker
+
     companion object {
+        @Provides
+        @Singleton
+        fun provideDateUtils(): DateUtils = DateUtils.Base()
+
         @Provides
         @Named("IO")
         fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO

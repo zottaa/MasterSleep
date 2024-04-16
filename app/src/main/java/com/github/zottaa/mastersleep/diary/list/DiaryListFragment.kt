@@ -57,6 +57,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
             )
         )
 
+        binding.bottomNavigation.selectedItemId = R.id.action_diary
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.action_diary -> {
@@ -73,6 +74,13 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                 R.id.action_settings -> {
                     findNavController().navigate(
                         DiaryListFragmentDirections.actionDiaryListFragmentToSettingsFragment()
+                    )
+                    true
+                }
+
+                R.id.action_statistic -> {
+                    findNavController().navigate(
+                        DiaryListFragmentDirections.actionDiaryListFragmentToPagerFragment()
                     )
                     true
                 }

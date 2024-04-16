@@ -21,5 +21,7 @@ enum class Languages(
     companion object {
         private val VALUES = entries.toTypedArray()
         fun getByValue(value: Int) = VALUES.first { it.code == value }
+        fun getByLocaleTag(tag: String) =
+            VALUES.firstOrNull { it.languageTag == tag.subSequence(0, 2) }
     }
 }
