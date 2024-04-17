@@ -49,15 +49,19 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
                 R.drawable.arrow_back
             )
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
-        binding.cancelAlarmButton.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.navigateToSetScreen.collect {
-                    if (it)
-                        findNavController().navigate(R.id.clockSetFragment)
+                launch {
+                    viewModel.navigateToSetScreen.collect {
+                        if (it)
+                            findNavController().navigate(R.id.clockSetFragment)
+                    }
+                }
+                launch {
+                    viewModel.alarmTriggerTime.collect {
+                        binding.alarmScheduleTextView.text =
+                            requireContext().getString(R.string.alarm_trigger, it)
+                    }
                 }
             }
         }

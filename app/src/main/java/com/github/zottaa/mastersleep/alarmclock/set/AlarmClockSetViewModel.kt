@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
 import com.github.zottaa.mastersleep.core.BundleWrapper
+import com.github.zottaa.mastersleep.core.Dispatcher
+import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.core.Now
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,11 +18,10 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class AlarmClockSetViewModel @Inject constructor(
-    @Named("IO")
+    @Dispatcher(DispatcherType.IO)
     private val dispatcher: CoroutineDispatcher,
     private val alarmDataStoreManager: AlarmDataStoreManager,
     private val now: Now

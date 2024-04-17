@@ -2,6 +2,8 @@ package com.github.zottaa.mastersleep.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.zottaa.mastersleep.core.Dispatcher
+import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.settings.Languages
 import com.github.zottaa.mastersleep.settings.SettingsDataStoreManager
 import com.github.zottaa.mastersleep.settings.Themes
@@ -12,12 +14,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val settingsDataStoreManager: SettingsDataStoreManager,
-    @Named("IO")
+    @Dispatcher(DispatcherType.IO)
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val theme: StateFlow<Themes>

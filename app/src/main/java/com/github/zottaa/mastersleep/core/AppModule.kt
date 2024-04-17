@@ -13,7 +13,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -41,11 +40,15 @@ abstract class AppModule {
         fun provideDateUtils(): DateUtils = DateUtils.Base()
 
         @Provides
-        @Named("IO")
+        @Singleton
+        fun provideTimeUtils(): DateTimeUtils = DateTimeUtils.Base()
+
+        @Provides
+        @Dispatcher(DispatcherType.IO)
         fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
         @Provides
-        @Named("Main")
+        @Dispatcher(DispatcherType.Main)
         fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
         @Singleton
@@ -63,3 +66,4 @@ abstract class AppModule {
         fun provideNow(): Now.Base = Now.Base()
     }
 }
+

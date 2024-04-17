@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.core.DateUtils
+import com.github.zottaa.mastersleep.core.Dispatcher
+import com.github.zottaa.mastersleep.core.DispatcherType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,12 +14,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class PagerFragmentViewModel @Inject constructor(
     private val dateUtils: DateUtils,
-    @Named("IO")
+    @Dispatcher(DispatcherType.IO)
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val dateRange: StateFlow<Pair<String, String>>

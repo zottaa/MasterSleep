@@ -31,22 +31,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/set_alarm"
-        android:textSize="32sp"
+        android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textClockAlarm"
-        app:layout_constraintBottom_toTopOf="@+id/startAlarmButton"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         />
 
     <Button
         android:id="@+id/startAlarmButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="@string/start_alarm"
-        android:textSize="32sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textClockAlarm"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         />
 

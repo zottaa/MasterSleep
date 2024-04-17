@@ -2,6 +2,8 @@ package com.github.zottaa.mastersleep.diary.edit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.zottaa.mastersleep.core.Dispatcher
+import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 import com.github.zottaa.mastersleep.diary.core.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,12 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class DiaryEditViewModel @Inject constructor(
     private val repository: NotesRepository.Edit,
-    @Named("IO")
+    @Dispatcher(DispatcherType.IO)
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 

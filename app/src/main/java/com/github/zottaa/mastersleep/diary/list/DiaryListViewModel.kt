@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.core.DateUtils
+import com.github.zottaa.mastersleep.core.Dispatcher
+import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 import com.github.zottaa.mastersleep.diary.core.NotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,13 +16,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class DiaryListViewModel @Inject constructor(
     private val dateUtils: DateUtils,
     private val repository: NotesRepository.ReadList,
-    @Named("IO")
+    @Dispatcher(DispatcherType.IO)
     private val dispatcher: CoroutineDispatcher
 ) : ViewModel(), SelectDay {
 
