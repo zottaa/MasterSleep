@@ -2,6 +2,8 @@ package com.github.zottaa.mastersleep.alarmclock.set
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.media.RingtoneManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
@@ -14,12 +16,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.github.zottaa.mastersleep.R
+import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneSelectViewModel
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentClockSetBinding
@@ -35,6 +39,7 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         FragmentClockSetBinding.inflate(inflater, container, false)
 
     private val viewModel: AlarmClockSetViewModel by viewModels()
+    private val sharedViewModel: RingtoneSelectViewModel by activityViewModels()
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -94,6 +99,13 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
             requestRuntimePermission(requestPermissionLauncher)
         }
 
+        binding.ringtoneChooseTextView.setOnClickListener {
+            findNavController().navigate(
+                AlarmClockSetFragmentDirections
+                    .actionClockSetFragmentToRingtoneSelectDialog()
+            )
+        }
+
         binding.bottomNavigation.selectedItemId = R.id.action_clock
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -139,7 +151,8 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     viewModel.isAlarmAlreadyScheduled.collect {
                         if (it)
                             findNavController().navigate(
-                                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
+                                AlarmClockSetFragmentDirections
+                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
                             )
                     }
                 }
@@ -147,13 +160,23 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     viewModel.navigateToSchedule.collect {
                         if (it) {
                             findNavController().navigate(
-                                AlarmClockSetFragmentDirections.actionClockSetFragmentToAlarmClockScheduleFragment()
+                                AlarmClockSetFragmentDirections
+                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
                             )
                         }
                     }
                 }
+                launch {
+                    sharedViewModel.selectedRingtone.collect {
+                        binding.ringtoneChooseTextView.text =
+                            RingtoneManager
+                                .getRingtone(requireContext(), Uri.parse(it))
+                                .getTitle(requireContext())
+                    }
+                }
             }
         }
+        sharedViewModel.init()
         if (savedInstanceState != null) {
             viewModel.restore(
                 BundleWrapper.String(savedInstanceState)
@@ -162,7 +185,9 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
     }
 
 
-    private fun requestRuntimePermission(activityResultLauncher: ActivityResultLauncher<Array<String>>) {
+    private fun requestRuntimePermission(
+        activityResultLauncher: ActivityResultLauncher<Array<String>>
+    ) {
         val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arrayOf(
                 POST_NOTIFICATIONS,

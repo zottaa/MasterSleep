@@ -32,4 +32,9 @@
     <string name="select_dates">Выберите даты</string>
     <string name="alarm_trigger">Будильник сработает в %1$s</string>
     <string name="sleep_track">Приложение собирает данные о вашем сне\nПожалуйста, не выключайте его.</string>
+    <string name="wake_up">Просыпайтесь!</string>
+    <string name="postpone">Перенести на 5 минут</string>
+    <string name="stop">Остановить</string>
+    <string name="select_ringtone">Выберите рингтон</string>
+    <string name="ringtone">Рингтон</string>
 </resources>

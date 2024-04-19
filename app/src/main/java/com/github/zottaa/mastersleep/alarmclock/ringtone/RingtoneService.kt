@@ -8,20 +8,28 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.alarmclock.receivers.RingtoneServiceActionsReceiver
 import com.github.zottaa.mastersleep.main.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class RingtoneService : Service() {
     private lateinit var ringtone: Ringtone
+
+    @Inject
+    lateinit var dataStore: RingtoneDataStore
+
     override fun onBind(intent: Intent?): IBinder? = null
 
 
     override fun onCreate() {
         super.onCreate()
-        val ringtoneUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val ringtoneUri = Uri.parse(dataStore.readRingtoneUri())
         ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
         ringtone.audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)

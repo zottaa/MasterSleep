@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_clockSetFragment_to_pagerFragment"
             app:destination="@id/pagerFragment" />
+        <action
+            android:id="@+id/action_clockSetFragment_to_ringtoneSelectDialog"
+            app:destination="@id/ringtoneSelectDialog" />
     </fragment>
     <fragment
         android:id="@+id/alarmClockScheduleFragment"
@@ -112,4 +115,8 @@
             android:id="@+id/action_pagerFragment_to_diaryListFragment"
             app:destination="@id/diaryListFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/ringtoneSelectDialog"
+        android:name="com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneSelectDialog"
+        android:label="RingtoneSelectDialog" />
 </navigation>
