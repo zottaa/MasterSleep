@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.SleepRequestManager
+import com.github.zottaa.mastersleep.statistic.diary.MostFrequentWordsCalculate
 import com.github.zottaa.mastersleep.statistic.pager.ProvideDatePicker
 import dagger.Binds
 import dagger.Module
@@ -64,6 +65,11 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideNow(): Now.Base = Now.Base()
+
+        @Provides
+        @Singleton
+        fun provideMostFrequentWordsCalculate(): MostFrequentWordsCalculate =
+            MostFrequentWordsCalculate.Base()
     }
 }
 

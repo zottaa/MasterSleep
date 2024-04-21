@@ -53,7 +53,6 @@ interface DateTimeUtils {
                 TimeZone.getDefault().toZoneId()
             )
 
-
         private fun usesAmPm(locale: Locale): Boolean {
             val pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
                 FormatStyle.MEDIUM, FormatStyle.MEDIUM, IsoChronology.INSTANCE, locale

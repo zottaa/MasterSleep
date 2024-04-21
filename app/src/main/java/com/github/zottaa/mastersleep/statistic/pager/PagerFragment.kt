@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,7 +21,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
-    private val viewModel: PagerFragmentViewModel by viewModels()
+    private val sharedViewModel: PagerFragmentViewModel by activityViewModels()
+    private lateinit var adapter: FragmentPageAdapter
 
     @Inject
     lateinit var provideDatePicker: ProvideDatePicker
@@ -68,16 +69,16 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
         }
 
         binding.dateRangeTextView.setOnClickListener {
-            val picker = provideDatePicker.provide(viewModel.dateRange.value)
+            val picker = provideDatePicker.provide(sharedViewModel.dateRange.value)
             picker.show(childFragmentManager, PagerFragment::class.java.name)
             picker.addOnPositiveButtonClickListener {
-                viewModel.pickDateRange(it.first, it.second)
+                sharedViewModel.pickDateRange(it.first, it.second)
             }
         }
 
         val tabLayout = binding.tabLayout
         val pager = binding.pager
-        val adapter = FragmentPageAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        adapter = FragmentPageAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         pager.adapter = adapter
         TabLayoutMediator(tabLayout, pager) { tab, position ->
             tab.text =
@@ -89,7 +90,7 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dateRange.collect {
+                sharedViewModel.dateRange.collect {
                     binding.dateRangeTextView.text =
                         requireContext().getString(R.string.date_range, it.first, it.second)
                 }
@@ -97,12 +98,12 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
         }
 
         if (savedInstanceState != null) {
-            viewModel.restore(BundleWrapper.StringArray(savedInstanceState))
+            sharedViewModel.restore(BundleWrapper.StringArray(savedInstanceState))
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.save(BundleWrapper.StringArray(outState))
+        sharedViewModel.save(BundleWrapper.StringArray(outState))
     }
 }

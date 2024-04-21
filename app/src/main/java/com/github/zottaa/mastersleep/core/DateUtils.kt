@@ -2,7 +2,9 @@ package com.github.zottaa.mastersleep.core
 
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -19,6 +21,8 @@ interface DateUtils {
     fun stringDateToLong(date: String, pattern: SimpleDateFormat): Long
 
     fun stringDateToLong(date: String): Long
+
+    fun stringToEpochDay(date: String): Long
 
 
     class Base : DateUtils {
@@ -62,6 +66,15 @@ interface DateUtils {
 
         override fun stringDateToLong(date: String): Long =
             stringDateToLong(date, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
+
+        override fun stringToEpochDay(date: String): Long {
+            val dateLong = stringDateToLong(date)
+            val localDate = LocalDateTime.ofInstant(
+                Instant.ofEpochMilli(dateLong),
+                TimeZone.getDefault().toZoneId()
+            ).toLocalDate()
+            return localDate.toEpochDay()
+        }
 
     }
 }

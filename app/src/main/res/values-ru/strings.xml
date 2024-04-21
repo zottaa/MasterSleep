@@ -37,4 +37,7 @@
     <string name="stop">Остановить</string>
     <string name="select_ringtone">Выберите рингтон</string>
     <string name="ringtone">Рингтон</string>
+    <string name="word">Слово</string>
+    <string name="frequency">Количество появлений</string>
+    <string name="nothing_found">Ничего не найдено\nПопробуйте поискать в другом диапазоне дат.</string>
 </resources>

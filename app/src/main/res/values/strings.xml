@@ -42,4 +42,7 @@
     <string name="stop">Stop</string>
     <string name="select_ringtone">Select ringtone</string>
     <string name="ringtone">Ringtone</string>
+    <string name="word">Word</string>
+    <string name="frequency">Frequency</string>
+    <string name="nothing_found">Nothing found.\nTry searching in a different date range.</string>
 </resources>

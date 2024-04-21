@@ -16,6 +16,9 @@ interface NotesDao {
     @Query("DELETE FROM notes WHERE id = :noteId")
     suspend fun delete(noteId: Long)
 
-    @Query("SELECT * FROM notes WHERE date = :date")
-    suspend fun notesWithDate(date: Long): List<NoteCache>
+    @Query("SELECT * FROM notes WHERE date = :epochDay")
+    suspend fun notesWithEpochDay(epochDay: Long): List<NoteCache>
+
+    @Query("SELECT * FROM notes where date between :begin and :end")
+    suspend fun notesInEpochDayRange(begin: Long, end: Long): List<NoteCache>
 }

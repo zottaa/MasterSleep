@@ -5,7 +5,9 @@ import javax.inject.Inject
 
 interface NotesRepository {
     interface ReadList {
-        suspend fun notes(date: Long): List<Note>
+        suspend fun notes(epochDay: Long): List<Note>
+
+        suspend fun notesInEpochDayRange(begin: Long, end: Long): List<Note>
     }
 
     interface Create {
@@ -25,7 +27,11 @@ interface NotesRepository {
         private val dao: NotesDao
     ) : All {
         override suspend fun notes(date: Long): List<Note> =
-            dao.notesWithDate(date).map { Note(it.id, it.title, it.content, it.date) }
+            dao.notesWithEpochDay(date).map { Note(it.id, it.title, it.content, it.date) }
+
+        override suspend fun notesInEpochDayRange(begin: Long, end: Long): List<Note> =
+            dao.notesInEpochDayRange(begin, end).map { Note(it.id, it.title, it.content, it.date) }
+
 
 
         override suspend fun create(title: String, content: String, date: Long) {
