@@ -45,4 +45,10 @@
     <string name="word">Word</string>
     <string name="frequency">Frequency</string>
     <string name="nothing_found">Nothing found.\nTry searching in a different date range.</string>
+    <string name="daily_diary_use_streak">Daily Diary Use Streak</string>
+    <string name="daily_wake_up_streak">Daily Wake-Up Streak</string>
+    <string name="current_streak">Current streak: %1$d</string>
+    <string name="current_max_streak">Max streak: %1$d</string>
+    <string name="daily">Daily</string>
+
 </resources>

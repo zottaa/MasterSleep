@@ -57,6 +57,13 @@ class SettingsFragment : AbstractFragment<FragmentSettingsBinding>() {
                     true
                 }
 
+                R.id.action_streaks -> {
+                    findNavController().navigate(
+                        SettingsFragmentDirections.actionSettingsFragmentToStreaksFragment()
+                    )
+                    true
+                }
+
                 else -> {
                     false
                 }

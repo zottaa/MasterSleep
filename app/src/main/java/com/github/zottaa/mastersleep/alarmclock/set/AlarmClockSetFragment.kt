@@ -134,6 +134,13 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                     true
                 }
 
+                R.id.action_streaks -> {
+                    findNavController().navigate(
+                        AlarmClockSetFragmentDirections.actionClockSetFragmentToStreaksFragment()
+                    )
+                    true
+                }
+
                 else -> {
                     false
                 }

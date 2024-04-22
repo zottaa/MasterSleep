@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.core.Dispatcher
 import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.diary.core.NotesRepository
+import com.github.zottaa.mastersleep.streaks.StreaksDataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -14,11 +15,13 @@ import javax.inject.Inject
 class DiaryCreateViewModel @Inject constructor(
     private val repository: NotesRepository.Create,
     @Dispatcher(DispatcherType.IO)
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher,
+    private val streaksDataStoreManager: StreaksDataStoreManager
 ) : ViewModel() {
     fun create(title: String, content: String, date: Long) {
         viewModelScope.launch(dispatcher) {
             repository.create(title, content, date)
+            streaksDataStoreManager.updateDiaryStreak()
         }
     }
 }

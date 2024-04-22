@@ -12,8 +12,6 @@ import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentClockRingBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 @AndroidEntryPoint
 class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
@@ -28,6 +26,7 @@ class AlarmClockRingFragment : AbstractFragment<FragmentClockRingBinding>() {
             findNavController().navigate(R.id.clockSetFragment)
         }
         binding.stopButton.setOnClickListener {
+            viewModel.stop()
             findNavController().navigate(AlarmClockRingFragmentDirections.actionAlarmClockRingFragmentToDiaryListFragment())
         }
     }

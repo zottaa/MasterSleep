@@ -58,6 +58,13 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
                     true
                 }
 
+                R.id.action_streaks -> {
+                    findNavController().navigate(
+                        PagerFragmentDirections.actionPagerFragmentToStreaksFragment()
+                    )
+                    true
+                }
+
                 R.id.action_statistic -> {
                     true
                 }

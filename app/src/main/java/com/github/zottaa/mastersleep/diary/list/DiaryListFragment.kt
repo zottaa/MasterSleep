@@ -85,6 +85,12 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                     true
                 }
 
+                R.id.action_streaks -> {
+                    findNavController().navigate(
+                        DiaryListFragmentDirections.actionDiaryListFragmentToStreaksFragment()
+                    )
+                    true
+                }
                 else -> {
                     false
                 }

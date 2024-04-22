@@ -40,4 +40,9 @@
     <string name="word">Слово</string>
     <string name="frequency">Количество появлений</string>
     <string name="nothing_found">Ничего не найдено\nПопробуйте поискать в другом диапазоне дат.</string>
+    <string name="daily_diary_use_streak">Ежедневная серия использования дневника</string>
+    <string name="daily_wake_up_streak">Ежедневная серия пробуждений</string>
+    <string name="current_streak">Текущая серия: %1$d</string>
+    <string name="current_max_streak">Максимальная серия: %1$d</string>
+    <string name="daily">Ежедневное</string>
 </resources>

@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_diaryListFragment_to_pagerFragment"
             app:destination="@id/pagerFragment" />
+        <action
+            android:id="@+id/action_diaryListFragment_to_streaksFragment"
+            app:destination="@id/streaksFragment" />
     </fragment>
     <fragment
         android:id="@+id/diaryCreateFragment"
@@ -65,6 +68,9 @@
         <action
             android:id="@+id/action_clockSetFragment_to_ringtoneSelectDialog"
             app:destination="@id/ringtoneSelectDialog" />
+        <action
+            android:id="@+id/action_clockSetFragment_to_streaksFragment"
+            app:destination="@id/streaksFragment" />
     </fragment>
     <fragment
         android:id="@+id/alarmClockScheduleFragment"
@@ -100,6 +106,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_pagerFragment"
             app:destination="@id/pagerFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_streaksFragment"
+            app:destination="@id/streaksFragment" />
     </fragment>
     <fragment
         android:id="@+id/pagerFragment"
@@ -114,9 +123,33 @@
         <action
             android:id="@+id/action_pagerFragment_to_diaryListFragment"
             app:destination="@id/diaryListFragment" />
+        <action
+            android:id="@+id/action_pagerFragment_to_streaksFragment"
+            app:destination="@id/streaksFragment" />
     </fragment>
     <dialog
         android:id="@+id/ringtoneSelectDialog"
         android:name="com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneSelectDialog"
-        android:label="RingtoneSelectDialog" />
+        android:label="RingtoneSelectDialog">
+        <action
+            android:id="@+id/action_ringtoneSelectDialog_to_streaksFragment"
+            app:destination="@id/streaksFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/streaksFragment"
+        android:name="com.github.zottaa.mastersleep.streaks.StreaksFragment"
+        android:label="StreaksFragment">
+        <action
+            android:id="@+id/action_streaksFragment_to_pagerFragment"
+            app:destination="@id/pagerFragment" />
+        <action
+            android:id="@+id/action_streaksFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_streaksFragment_to_diaryListFragment"
+            app:destination="@id/diaryListFragment" />
+        <action
+            android:id="@+id/action_streaksFragment_to_clockSetFragment"
+            app:destination="@id/clockSetFragment" />
+    </fragment>
 </navigation>

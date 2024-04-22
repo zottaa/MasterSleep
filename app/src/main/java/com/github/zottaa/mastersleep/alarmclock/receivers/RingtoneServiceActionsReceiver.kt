@@ -9,6 +9,7 @@ import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmItem
 import com.github.zottaa.mastersleep.main.MainActivity
+import com.github.zottaa.mastersleep.streaks.StreaksDataStoreManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -33,7 +34,7 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
             )
             stopServicePendingIntent.send()
 
-            val navigationIntent = Intent(context, MainActivity::class.java)
+            val actionIntent = Intent(context, MainActivity::class.java)
             when (intent.action) {
                 SNOOZE_ACTION -> {
                     val alarmDataStoreManager = AlarmDataStoreManager(context)
@@ -49,9 +50,16 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
                     }
                     alarmClockSchedule.schedule(AlarmItem(newAlarmTime))
                 }
+
+                STOP_ACTION -> {
+                    val streaksDataStoreManager = StreaksDataStoreManager(context)
+                    goAsync {
+                        streaksDataStoreManager.updateSleepStreak()
+                    }
+                }
             }
             val pendingIntent = PendingIntent.getActivity(
-                context, 1, navigationIntent,
+                context, 1, actionIntent,
                 PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             )
             pendingIntent.send()
@@ -76,5 +84,6 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
     companion object {
         private const val STOP_SERVICE = "STOP_SERVICE"
         private const val SNOOZE_ACTION = "snooze"
+        private const val STOP_ACTION = "stop"
     }
 }
