@@ -1,6 +1,5 @@
 package com.github.zottaa.mastersleep.diary.list
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,6 +10,8 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 class CalendarAdapter(
+    private val backgroundColor: Int,
+    private val accentColor: Int,
     private val selectDay: SelectDay,
     private var days: ArrayList<LocalDate> = ArrayList(),
     private var selectedDate: LocalDate = LocalDate.now()
@@ -35,7 +36,7 @@ class CalendarAdapter(
         val binding = CalendarItemBinding.inflate(
             LayoutInflater.from(parent.context)
         )
-        return CalendarViewHolder(binding, selectDay)
+        return CalendarViewHolder(binding, selectDay, backgroundColor, accentColor)
     }
 
     override fun getItemCount(): Int = days.size
@@ -47,7 +48,9 @@ class CalendarAdapter(
 
 class CalendarViewHolder(
     private val binding: CalendarItemBinding,
-    private val selectDay: SelectDay
+    private val selectDay: SelectDay,
+    private val backgroundColor: Int,
+    private val accentColor: Int
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun hold(days: ArrayList<LocalDate>, position: Int, selectedDate: LocalDate) {
@@ -58,9 +61,9 @@ class CalendarViewHolder(
         binding.calendarItemDayNumber.text = day.dayOfMonth.toString()
 
         if (day.isEqual(selectedDate)) {
-            binding.calendarItemRoot.setBackgroundColor(Color.LTGRAY)
+            binding.calendarItemRoot.setBackgroundColor(accentColor)
         } else {
-            binding.calendarItemRoot.setBackgroundColor(Color.WHITE)
+            binding.calendarItemRoot.setBackgroundColor(backgroundColor)
         }
 
         binding.calendarItemRoot.setOnClickListener {

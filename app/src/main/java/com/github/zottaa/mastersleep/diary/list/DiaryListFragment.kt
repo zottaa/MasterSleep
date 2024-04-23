@@ -1,5 +1,6 @@
 package com.github.zottaa.mastersleep.diary.list
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,7 @@ import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
 import com.github.zottaa.mastersleep.diary.core.NoteUi
+import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -33,6 +35,16 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
         val calendarAdapter = CalendarAdapter(
+            MaterialColors.getColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorBackgroundFloating,
+                Color.WHITE
+            ),
+            MaterialColors.getColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorAccent,
+                Color.LTGRAY
+            ),
             object : SelectDay {
                 override fun selectDay(currentDay: LocalDate) {
                     viewModel.selectDay(currentDay)
@@ -91,6 +103,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                     )
                     true
                 }
+
                 else -> {
                     false
                 }

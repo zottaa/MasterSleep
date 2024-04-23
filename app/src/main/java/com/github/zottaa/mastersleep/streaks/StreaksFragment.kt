@@ -51,7 +51,7 @@ class StreaksFragment : AbstractFragment<FragmentStreaksBinding>() {
 
                 R.id.action_statistic -> {
                     findNavController().navigate(
-                        StreaksFragmentDirections.actionStreaksFragmentToSettingsFragment()
+                        StreaksFragmentDirections.actionStreaksFragmentToPagerFragment()
                     )
                     true
                 }
