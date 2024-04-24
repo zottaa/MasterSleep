@@ -77,6 +77,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     testImplementation("junit:junit:4.13.2")

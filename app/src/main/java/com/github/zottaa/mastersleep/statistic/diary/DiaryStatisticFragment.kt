@@ -30,12 +30,20 @@ class DiaryStatisticFragment : AbstractFragment<FragmentDiaryStatisticBinding>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = WordFrequencyAdapter()
+        setupWordFrequencyRecyclerView(adapter)
+        observeViewModels(adapter)
+    }
+
+    private fun setupWordFrequencyRecyclerView(adapter: WordFrequencyAdapter) {
         binding.diaryStatisticRecyclerView.adapter = adapter
         binding.diaryStatisticRecyclerView.addItemDecoration(
             SpaceItemDecoration(
                 16
             )
         )
+    }
+
+    private fun observeViewModels(adapter: WordFrequencyAdapter) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {

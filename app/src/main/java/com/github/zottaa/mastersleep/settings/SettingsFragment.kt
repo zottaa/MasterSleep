@@ -27,8 +27,79 @@ class SettingsFragment : AbstractFragment<FragmentSettingsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
+        setupToolar()
+        setupBottomNavigation()
+        binding.languageCard.setOnClickListener {
+            setupLanguageDialog()
+        }
 
+        binding.themeCard.setOnClickListener {
+            setupThemeDialog()
+        }
+        observeViewModel()
+        viewModel.init()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.language.collect {
+                        binding.languageTextView.text = it.string(requireContext())
+                        chosenLanguage = it
+
+                    }
+                }
+                launch {
+                    viewModel.theme.collect {
+                        binding.themeTextView.text = it.string(requireContext())
+                        chosenTheme = it
+                    }
+                }
+                launch {
+                    viewModel.configurationChange.collect {
+                        if (it) {
+                            requireActivity().recreate()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupThemeDialog() {
+        SettingsDialogProvide.Theme(requireContext())
+            .provide(
+                Themes.entries.map { it.string(requireContext()) }.toTypedArray(),
+                viewModel.theme.value.code,
+                {
+                    if (chosenTheme != viewModel.theme.value) {
+                        viewModel.changeTheme(chosenTheme)
+                    }
+                }
+            ) { checkedIndex ->
+                chosenTheme = Themes.getByValue(checkedIndex)
+            }
+            .show()
+    }
+
+    private fun setupLanguageDialog() {
+        SettingsDialogProvide.Language(requireContext())
+            .provide(
+                Languages.entries.map { it.string(requireContext()) }.toTypedArray(),
+                viewModel.language.value.code,
+                {
+                    if (chosenLanguage != viewModel.language.value) {
+                        viewModel.changeLocale(chosenLanguage)
+                    }
+                }
+            ) { checkedIndex ->
+                chosenLanguage = Languages.getByValue(checkedIndex)
+            }
+            .show()
+    }
+
+    private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.action_settings
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -69,63 +140,9 @@ class SettingsFragment : AbstractFragment<FragmentSettingsBinding>() {
                 }
             }
         }
+    }
 
-        binding.languageCard.setOnClickListener {
-            SettingsDialogProvide.Language(requireContext())
-                .provide(
-                    Languages.entries.map { it.string(requireContext()) }.toTypedArray(),
-                    viewModel.language.value.code,
-                    {
-                        if (chosenLanguage != viewModel.language.value) {
-                            viewModel.changeLocale(chosenLanguage)
-                        }
-                    }
-                ) { checkedIndex ->
-                    chosenLanguage = Languages.getByValue(checkedIndex)
-                }
-                .show()
-        }
-
-        binding.themeCard.setOnClickListener {
-            SettingsDialogProvide.Theme(requireContext())
-                .provide(
-                    Themes.entries.map { it.string(requireContext()) }.toTypedArray(),
-                    viewModel.theme.value.code,
-                    {
-                        if (chosenTheme != viewModel.theme.value) {
-                            viewModel.changeTheme(chosenTheme)
-                        }
-                    }
-                ) { checkedIndex ->
-                    chosenTheme = Themes.getByValue(checkedIndex)
-                }
-                .show()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.language.collect {
-                        binding.languageTextView.text = it.string(requireContext())
-                        chosenLanguage = it
-
-                    }
-                }
-                launch {
-                    viewModel.theme.collect {
-                        binding.themeTextView.text = it.string(requireContext())
-                        chosenTheme = it
-                    }
-                }
-                launch {
-                    viewModel.configurationChange.collect {
-                        if (it) {
-                            requireActivity().recreate()
-                        }
-                    }
-                }
-            }
-        }
-        viewModel.init()
+    private fun setupToolar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
     }
 }

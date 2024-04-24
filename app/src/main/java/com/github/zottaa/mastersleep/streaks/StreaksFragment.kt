@@ -24,7 +24,44 @@ class StreaksFragment : AbstractFragment<FragmentStreaksBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
+        setupToolbar()
+        setupBottomNavigation()
+        observeViewModel()
+        viewModel.init()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.currentStreakDiary.collect {
+                        binding.diaryStreakTextView.text =
+                            requireContext().getString(R.string.current_streak, it)
+                    }
+                }
+                launch {
+                    viewModel.maxStreakDiary.collect {
+                        binding.diaryMaxStreakTextView.text =
+                            requireContext().getString(R.string.current_max_streak, it)
+                    }
+                }
+                launch {
+                    viewModel.currentStreakSleep.collect {
+                        binding.sleepStreakTextView.text =
+                            requireContext().getString(R.string.current_streak, it)
+                    }
+                }
+                launch {
+                    viewModel.maxStreakSleep.collect {
+                        binding.sleepMaxStreakTextView.text =
+                            requireContext().getString(R.string.current_max_streak, it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.action_streaks
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -65,34 +102,9 @@ class StreaksFragment : AbstractFragment<FragmentStreaksBinding>() {
                 }
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.currentStreakDiary.collect {
-                        binding.diaryStreakTextView.text =
-                            requireContext().getString(R.string.current_streak, it)
-                    }
-                }
-                launch {
-                    viewModel.maxStreakDiary.collect {
-                        binding.diaryMaxStreakTextView.text =
-                            requireContext().getString(R.string.current_max_streak, it)
-                    }
-                }
-                launch {
-                    viewModel.currentStreakSleep.collect {
-                        binding.sleepStreakTextView.text =
-                            requireContext().getString(R.string.current_streak, it)
-                    }
-                }
-                launch {
-                    viewModel.maxStreakSleep.collect {
-                        binding.sleepMaxStreakTextView.text =
-                            requireContext().getString(R.string.current_max_streak, it)
-                    }
-                }
-            }
-        }
-        viewModel.init()
+    }
+
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
     }
 }

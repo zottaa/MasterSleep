@@ -42,20 +42,36 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), Menu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            onBackPressedCallback
-        )
+        setupOnBackPressCallback()
+        setupMenuProvider()
+        setupToolbar()
+        if (savedInstanceState != null) {
+            restore(savedInstanceState)
+        }
+    }
+
+    private fun setupMenuProvider() {
         requireActivity().addMenuProvider(this, viewLifecycleOwner)
+    }
+
+    private fun restore(savedInstanceState: Bundle) {
+        binding.titleTextInputEditText.setText(savedInstanceState.getString(TITLE_KEY))
+        binding.contentTextInputEditText.setText(savedInstanceState.getString(CONTENT_KEY))
+    }
+
+    private fun setupToolbar() {
         requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
             AppCompatResources.getDrawable(
                 requireContext(),
                 R.drawable.arrow_back
             )
-        if (savedInstanceState != null) {
-            binding.titleTextInputEditText.setText(savedInstanceState.getString(TITLE_KEY))
-            binding.contentTextInputEditText.setText(savedInstanceState.getString(CONTENT_KEY))
-        }
+    }
+
+    private fun setupOnBackPressCallback() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -1,21 +1,13 @@
 package com.github.zottaa.mastersleep.alarmclock.set
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -41,71 +33,87 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
     private val viewModel: AlarmClockSetViewModel by viewModels()
     private val sharedViewModel: RingtoneSelectViewModel by activityViewModels()
 
-    private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var permissionRequest: PermissionRequest
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
-        requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestMultiplePermissions(
-                )
-            ) { permissions ->
-                val allPermissionGranted = permissions.all { it.value }
-                if (allPermissionGranted) {
-                    startAlarmClock()
-                } else {
-                    permissions.entries.forEach { entry ->
-                        val permission = entry.key
-                        val isGranted = entry.value
-                        val permissionDialogProvide by lazy {
-                            PermissionDialogProvide.Base(
-                                requireActivity(),
-                                requireContext()
-                            )
-                        }
-                        if (!isGranted && !ActivityCompat.shouldShowRequestPermissionRationale(
-                                requireActivity(),
-                                permission
-                            )
-                        ) {
-                            permissionDialogProvide.showPermissionDenialDialog(
-                                permission
-                            )
-                            return@registerForActivityResult
-                        }
-                    }
-                    requestRuntimePermission(requestPermissionLauncher)
-                }
-            }
+        setupToolbar()
         binding.setAlarmTimeButton.setOnClickListener {
-            val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
-            val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
-            val picker = MaterialTimePicker.Builder()
-                .setTimeFormat(clockFormat)
-                .setTitleText(requireContext().getString(R.string.set_alarm))
-                .setHour(LocalTime.now().hour)
-                .setMinute(LocalTime.now().minute)
-                .build()
-
-            picker.addOnPositiveButtonClickListener {
-                viewModel.setAlarmTime(picker.hour, picker.minute, isSystem24Hour)
-            }
-
-            picker.show(childFragmentManager, AlarmClockSetFragment::class.java.name)
+            setupTimePicker()
         }
-
-        binding.startAlarmButton.setOnClickListener {
-            requestRuntimePermission(requestPermissionLauncher)
-        }
-
+        setupPermissionRequest()
         binding.ringtoneChooseTextView.setOnClickListener {
             findNavController().navigate(
                 AlarmClockSetFragmentDirections
                     .actionClockSetFragmentToRingtoneSelectDialog()
             )
         }
+        setupBottomNavigation()
+        observeViewModels()
+        sharedViewModel.init()
+        if (savedInstanceState != null) {
+            restore(savedInstanceState)
+        }
+    }
 
+    private fun restore(savedInstanceState: Bundle) {
+        viewModel.restore(
+            BundleWrapper.String(savedInstanceState)
+        )
+    }
+
+    private fun setupPermissionRequest() {
+        permissionRequest = PermissionRequest(
+            requireActivity(),
+            requireContext()
+        ) {
+            startAlarmClock()
+        }
+        binding.startAlarmButton.setOnClickListener {
+            requestPermissions()
+        }
+    }
+
+    private fun observeViewModels() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.selectedTime.collect {
+                        binding.textClockAlarm.text = it
+                    }
+                }
+                launch {
+                    viewModel.isAlarmAlreadyScheduled.collect {
+                        if (it)
+                            findNavController().navigate(
+                                AlarmClockSetFragmentDirections
+                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
+                            )
+                    }
+                }
+                launch {
+                    viewModel.navigateToSchedule.collect {
+                        if (it) {
+                            findNavController().navigate(
+                                AlarmClockSetFragmentDirections
+                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
+                            )
+                        }
+                    }
+                }
+                launch {
+                    sharedViewModel.selectedRingtone.collect {
+                        binding.ringtoneChooseTextView.text =
+                            RingtoneManager
+                                .getRingtone(requireContext(), Uri.parse(it))
+                                .getTitle(requireContext())
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.action_clock
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -146,98 +154,33 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
                 }
             }
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.selectedTime.collect {
-                        binding.textClockAlarm.text = it
-                    }
-                }
-                launch {
-                    viewModel.isAlarmAlreadyScheduled.collect {
-                        if (it)
-                            findNavController().navigate(
-                                AlarmClockSetFragmentDirections
-                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
-                            )
-                    }
-                }
-                launch {
-                    viewModel.navigateToSchedule.collect {
-                        if (it) {
-                            findNavController().navigate(
-                                AlarmClockSetFragmentDirections
-                                    .actionClockSetFragmentToAlarmClockScheduleFragment()
-                            )
-                        }
-                    }
-                }
-                launch {
-                    sharedViewModel.selectedRingtone.collect {
-                        binding.ringtoneChooseTextView.text =
-                            RingtoneManager
-                                .getRingtone(requireContext(), Uri.parse(it))
-                                .getTitle(requireContext())
-                    }
-                }
-            }
-        }
-        sharedViewModel.init()
-        if (savedInstanceState != null) {
-            viewModel.restore(
-                BundleWrapper.String(savedInstanceState)
-            )
-        }
     }
 
+    private fun requestPermissions() {
+        permissionRequest.requestRuntimePermission(
+            permissionRequest.requestPermissionLauncher
+        )
+    }
 
-    private fun requestRuntimePermission(
-        activityResultLauncher: ActivityResultLauncher<Array<String>>
-    ) {
-        val permissionsToRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(
-                POST_NOTIFICATIONS,
-                ACTIVITY_RECOGNITION
-            )
-        } else {
-            arrayOf(ACTIVITY_RECOGNITION)
+    private fun setupTimePicker() {
+        val isSystem24Hour = DateFormat.is24HourFormat(requireContext())
+        val clockFormat = if (isSystem24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        val picker = MaterialTimePicker.Builder()
+            .setTimeFormat(clockFormat)
+            .setTitleText(requireContext().getString(R.string.set_alarm))
+            .setHour(LocalTime.now().hour)
+            .setMinute(LocalTime.now().minute)
+            .build()
+
+        picker.addOnPositiveButtonClickListener {
+            viewModel.setAlarmTime(picker.hour, picker.minute, isSystem24Hour)
         }
 
-        when {
-            permissionsToRequest.all {
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    it
-                ) == PackageManager.PERMISSION_GRANTED
-            } -> {
-                startAlarmClock()
-            }
+        picker.show(childFragmentManager, AlarmClockSetFragment::class.java.name)
+    }
 
-            permissionsToRequest.any {
-                ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), it)
-            } -> {
-                val permissionDialogProvide by lazy {
-                    PermissionDialogProvide.Base(
-                        requireActivity(),
-                        requireContext()
-                    )
-                }
-                permissionsToRequest.forEach { permission ->
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
-                            permission
-                        )
-                    )
-                        permissionDialogProvide.showPermissionRationaleDialog(
-                            activityResultLauncher,
-                            permission
-                        )
-                }
-            }
-
-            else -> activityResultLauncher.launch(permissionsToRequest)
-        }
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
     }
 
     private fun startAlarmClock() {
@@ -255,11 +198,5 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         viewModel.save(
             BundleWrapper.String(outState)
         )
-    }
-
-    companion object {
-        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-        private const val POST_NOTIFICATIONS = Manifest.permission.POST_NOTIFICATIONS
-        private const val ACTIVITY_RECOGNITION = Manifest.permission.ACTIVITY_RECOGNITION
     }
 }

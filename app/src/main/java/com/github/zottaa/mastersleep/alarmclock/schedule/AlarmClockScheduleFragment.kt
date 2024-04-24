@@ -39,16 +39,13 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            onBackPressedCallback
-        )
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
-            AppCompatResources.getDrawable(
-                requireContext(),
-                R.drawable.arrow_back
-            )
-        requireActivity().addMenuProvider(this, viewLifecycleOwner)
+        setupOnBackPressedCallback()
+        setupToolbar()
+        setupMenuProvider()
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -65,6 +62,25 @@ class AlarmClockScheduleFragment : AbstractFragment<FragmentClockScheduleBinding
                 }
             }
         }
+    }
+
+    private fun setupMenuProvider() {
+        requireActivity().addMenuProvider(this, viewLifecycleOwner)
+    }
+
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
+            AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.arrow_back
+            )
+    }
+
+    private fun setupOnBackPressedCallback() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
     override fun onResume() {

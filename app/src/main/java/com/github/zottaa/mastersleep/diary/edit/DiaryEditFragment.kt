@@ -44,17 +44,16 @@ class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProv
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            onBackPressedCallback
-        )
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
-            AppCompatResources.getDrawable(
-                requireContext(),
-                R.drawable.arrow_back
-            )
-        requireActivity().addMenuProvider(this, viewLifecycleOwner)
+        setupOnBackPressedCallback()
+        setupToolbar()
+        setupMenuProvider()
+        observeViewModel()
+        viewModel.init(args.noteId)
+        addUpdateListener(binding.contentEditTextInputEditText)
+        addUpdateListener(binding.titleEditTextInputEditText)
+    }
 
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteLiveData.collect {
@@ -63,11 +62,25 @@ class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProv
                 }
             }
         }
+    }
 
-        viewModel.init(args.noteId)
+    private fun setupMenuProvider() {
+        requireActivity().addMenuProvider(this, viewLifecycleOwner)
+    }
 
-        addUpdateListener(binding.contentEditTextInputEditText)
-        addUpdateListener(binding.titleEditTextInputEditText)
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon =
+            AppCompatResources.getDrawable(
+                requireContext(),
+                R.drawable.arrow_back
+            )
+    }
+
+    private fun setupOnBackPressedCallback() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
     }
 
 

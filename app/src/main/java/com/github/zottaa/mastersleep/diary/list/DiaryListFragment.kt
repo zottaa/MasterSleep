@@ -33,42 +33,70 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
-        val calendarAdapter = CalendarAdapter(
-            MaterialColors.getColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorBackgroundFloating,
-                Color.WHITE
-            ),
-            MaterialColors.getColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorAccent,
-                Color.LTGRAY
-            ),
-            object : SelectDay {
-                override fun selectDay(currentDay: LocalDate) {
-                    viewModel.selectDay(currentDay)
-                }
-            })
-        binding.calendarRecyclerView.adapter = calendarAdapter
-        binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
-        binding.calendarRecyclerView.addItemDecoration(GridItemDecoration(14))
+        setupToolbar()
+        val calendarAdapter = setupCalendarAdapter()
+        setupCalendarRecyclerView(calendarAdapter)
+        val noteAdapter = setupNoteAdapter()
+        setupNoteRecyclerView(noteAdapter)
+        setupBottomNavigation()
+        observeViewModel(calendarAdapter, noteAdapter)
+        binding.nextWeekButton.setOnClickListener {
+            viewModel.nextWeek()
+        }
+        binding.previousWeekButton.setOnClickListener {
+            viewModel.previousWeek()
+        }
+        binding.addButton.setOnClickListener {
+            val date = viewModel.selectedDate.value.toEpochDay()
+            val action =
+                DiaryListFragmentDirections.actionDiaryListFragmentToDiaryCreateFragment(date)
+            findNavController().navigate(action)
+        }
 
-        val noteAdapter = NotesAdapter(
-            object : EditNote {
-                override fun editNote(noteUi: NoteUi) {
-                    val action = noteUi.mapAction(DiaryListFragmentDirections)
-                    findNavController().navigate(action)
+        if (savedInstanceState != null) {
+            restore(savedInstanceState)
+        }
+        viewModel.init(savedInstanceState == null)
+    }
+
+    private fun restore(savedInstanceState: Bundle) {
+        viewModel.restore(
+            BundleWrapper.String(savedInstanceState),
+            BundleWrapper.StringArray(savedInstanceState)
+        )
+    }
+
+    private fun observeViewModel(
+        calendarAdapter: CalendarAdapter,
+        noteAdapter: NotesAdapter
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.selectedDate.collect {
+                        calendarAdapter.updateDate(it)
+                        binding.currentMonthYearTextView.text =
+                            it.format(
+                                DateTimeFormatter.ofPattern("MMM yyyy")
+                                    .withLocale(Locale.getDefault())
+                            )
+                    }
+                }
+                launch {
+                    viewModel.week.collect {
+                        calendarAdapter.update(it)
+                    }
+                }
+                launch {
+                    viewModel.notes.collect {
+                        noteAdapter.update(it)
+                    }
                 }
             }
-        )
-        binding.notesRecyclerView.adapter = noteAdapter
-        binding.notesRecyclerView.addItemDecoration(
-            SpaceItemDecoration(
-                16
-            )
-        )
+        }
+    }
 
+    private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.action_diary
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -109,54 +137,54 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                 }
             }
         }
+    }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    viewModel.selectedDate.collect {
-                        calendarAdapter.updateDate(it)
-                        binding.currentMonthYearTextView.text =
-                            it.format(
-                                DateTimeFormatter.ofPattern("MMM yyyy")
-                                    .withLocale(Locale.getDefault())
-                            )
-                    }
-                }
-                launch {
-                    viewModel.week.collect {
-                        calendarAdapter.update(it)
-                    }
-                }
-                launch {
-                    viewModel.notes.collect {
-                        noteAdapter.update(it)
-                    }
-                }
+    private fun setupNoteRecyclerView(noteAdapter: NotesAdapter) {
+        binding.notesRecyclerView.adapter = noteAdapter
+        binding.notesRecyclerView.addItemDecoration(
+            SpaceItemDecoration(
+                16
+            )
+        )
+    }
+
+    private fun setupNoteAdapter() = NotesAdapter(
+        object : EditNote {
+            override fun editNote(noteUi: NoteUi) {
+                val action = noteUi.mapAction(DiaryListFragmentDirections)
+                findNavController().navigate(action)
             }
         }
+    )
 
-        binding.nextWeekButton.setOnClickListener {
-            viewModel.nextWeek()
-        }
+    private fun setupCalendarRecyclerView(calendarAdapter: CalendarAdapter) {
+        binding.calendarRecyclerView.adapter = calendarAdapter
+        binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
+        binding.calendarRecyclerView.addItemDecoration(GridItemDecoration(14))
+    }
 
-        binding.previousWeekButton.setOnClickListener {
-            viewModel.previousWeek()
-        }
+    private fun setupCalendarAdapter(): CalendarAdapter {
+        val calendarAdapter = CalendarAdapter(
+            MaterialColors.getColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorBackgroundFloating,
+                Color.WHITE
+            ),
+            MaterialColors.getColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorAccent,
+                Color.LTGRAY
+            ),
+            object : SelectDay {
+                override fun selectDay(currentDay: LocalDate) {
+                    viewModel.selectDay(currentDay)
+                }
+            })
+        return calendarAdapter
+    }
 
-        binding.addButton.setOnClickListener {
-            val date = viewModel.selectedDate.value.toEpochDay()
-            val action =
-                DiaryListFragmentDirections.actionDiaryListFragmentToDiaryCreateFragment(date)
-            findNavController().navigate(action)
-        }
-
-        if (savedInstanceState != null) {
-            viewModel.restore(
-                BundleWrapper.String(savedInstanceState),
-                BundleWrapper.StringArray(savedInstanceState)
-            )
-        }
-        viewModel.init(savedInstanceState == null)
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

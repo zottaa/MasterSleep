@@ -32,8 +32,58 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
+        setupToolbar()
+        setupBottomNavigation()
+        binding.dateRangeTextView.setOnClickListener {
+            setupDateRangePicker()
+        }
+        setupPager()
 
+        observeViewModel()
+
+        if (savedInstanceState != null) {
+            restore(savedInstanceState)
+        }
+    }
+
+    private fun setupDateRangePicker() {
+        val picker = provideDatePicker.provide(sharedViewModel.dateRange.value)
+        picker.show(childFragmentManager, PagerFragment::class.java.name)
+        picker.addOnPositiveButtonClickListener {
+            sharedViewModel.pickDateRange(it.first, it.second)
+        }
+    }
+
+    private fun setupPager() {
+        val tabLayout = binding.tabLayout
+        val pager = binding.pager
+        adapter = FragmentPageAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        pager.adapter = adapter
+        TabLayoutMediator(tabLayout, pager) { tab, position ->
+            tab.text =
+                if (position == 0)
+                    requireContext().getString(R.string.sleep)
+                else
+                    requireContext().getString(R.string.item_navigation_diary)
+        }.attach()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                sharedViewModel.dateRange.collect {
+                    binding.dateRangeTextView.text =
+                        requireContext().getString(R.string.date_range, it.first, it.second)
+                }
+            }
+        }
+    }
+
+    private fun restore(savedInstanceState: Bundle) {
+        sharedViewModel.restore(BundleWrapper.StringArray(savedInstanceState))
+    }
+
+    private fun setupBottomNavigation() {
         binding.bottomNavigation.selectedItemId = R.id.action_statistic
         binding.bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
@@ -74,39 +124,10 @@ class PagerFragment : AbstractFragment<FragmentViewPagerBinding>() {
                 }
             }
         }
+    }
 
-        binding.dateRangeTextView.setOnClickListener {
-            val picker = provideDatePicker.provide(sharedViewModel.dateRange.value)
-            picker.show(childFragmentManager, PagerFragment::class.java.name)
-            picker.addOnPositiveButtonClickListener {
-                sharedViewModel.pickDateRange(it.first, it.second)
-            }
-        }
-
-        val tabLayout = binding.tabLayout
-        val pager = binding.pager
-        adapter = FragmentPageAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
-        pager.adapter = adapter
-        TabLayoutMediator(tabLayout, pager) { tab, position ->
-            tab.text =
-                if (position == 0)
-                    requireContext().getString(R.string.sleep)
-                else
-                    requireContext().getString(R.string.item_navigation_diary)
-        }.attach()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sharedViewModel.dateRange.collect {
-                    binding.dateRangeTextView.text =
-                        requireContext().getString(R.string.date_range, it.first, it.second)
-                }
-            }
-        }
-
-        if (savedInstanceState != null) {
-            sharedViewModel.restore(BundleWrapper.StringArray(savedInstanceState))
-        }
+    private fun setupToolbar() {
+        requireActivity().findViewById<Toolbar>(R.id.toolbar).navigationIcon = null
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -32,6 +32,11 @@ class MainActivity : AppCompatActivity() {
         if (intent != null) {
             handleIntent(intent)
         }
+        observeViewModel()
+        viewModel.init()
+    }
+
+    private fun observeViewModel() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -52,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.init()
     }
 
     override fun onNewIntent(intent: Intent?) {
