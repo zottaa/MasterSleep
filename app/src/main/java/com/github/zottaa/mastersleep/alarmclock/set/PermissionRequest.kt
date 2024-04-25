@@ -9,17 +9,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
 class PermissionRequest(
+    private val fragment: Fragment,
     private val activity: FragmentActivity,
     private val context: Context,
     private val block: () -> Unit
 ) {
     lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
-    init {
-        requestPermissionLauncher = activity.registerForActivityResult(
+    fun init() {
+        requestPermissionLauncher = fragment.registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
             val allPermissionGranted = permissions.all { it.value }

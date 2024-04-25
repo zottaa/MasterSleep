@@ -1,7 +1,11 @@
 package com.github.zottaa.mastersleep.core
 
 import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.chrono.IsoChronology
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
@@ -15,6 +19,8 @@ interface DateTimeUtils {
     fun localDateTimeToString(localDateTime: LocalDateTime): String
 
     fun longToLocalDateTime(dateTime: Long): LocalDateTime
+
+    fun isInEpochDay(epochDay: Long, timeToCheck: Long): Boolean
 
     class Base : DateTimeUtils {
         override fun stringTimeFromLong(dateTime: Long) =
@@ -52,6 +58,17 @@ interface DateTimeUtils {
                 Instant.ofEpochMilli(dateTime),
                 TimeZone.getDefault().toZoneId()
             )
+
+        override fun isInEpochDay(epochDay: Long, timeToCheck: Long): Boolean {
+            val day = LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MIN).toEpochSecond(
+                ZoneOffset.of(ZoneId.systemDefault().id)
+            )
+            val nextDay =
+                LocalDateTime.of(LocalDate.ofEpochDay(epochDay + 1), LocalTime.MIN).toEpochSecond(
+                    ZoneOffset.of(ZoneId.systemDefault().id)
+                )
+            return timeToCheck in day..<nextDay
+        }
 
         private fun usesAmPm(locale: Locale): Boolean {
             val pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(

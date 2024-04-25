@@ -42,7 +42,7 @@ interface DateUtils {
         }
 
         override fun dateFromLong(dateInMilliSeconds: Long): String {
-            val utc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            val utc = Calendar.getInstance(TimeZone.getDefault())
             utc.timeInMillis = dateInMilliSeconds
             val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             return pattern.format(utc.time)

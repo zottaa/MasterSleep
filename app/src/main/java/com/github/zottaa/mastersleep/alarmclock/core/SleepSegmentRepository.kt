@@ -38,11 +38,8 @@ interface SleepSegmentRepository {
 }
 
 data class SleepSegment(
-    private val startTime: Long,
-    private val sleepStart: Long,
-    private val sleepEnd: Long,
-    private val alarmTime: Long
-) {
-    fun toUi() =
-        SleepSegmentUi(this.startTime, this.sleepStart, this.sleepEnd, this.alarmTime)
-}
+    val startTime: Long,
+    val sleepStart: Long,
+    val sleepEnd: Long,
+    val alarmTime: Long
+)

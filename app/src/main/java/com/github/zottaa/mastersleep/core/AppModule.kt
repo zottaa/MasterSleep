@@ -6,6 +6,7 @@ import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.SleepRequestManager
 import com.github.zottaa.mastersleep.statistic.diary.MostFrequentWordsCalculate
 import com.github.zottaa.mastersleep.statistic.pager.ProvideDatePicker
+import com.github.zottaa.mastersleep.statistic.sleep.ChartDataSetBuilder
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,10 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindProvideDatePicker(provideDataPicker: ProvideDatePicker.Base): ProvideDatePicker
+
+    @Binds
+    @Singleton
+    abstract fun bindChartDataSetBuilder(chartDataSetBuilder: ChartDataSetBuilder.Base): ChartDataSetBuilder
 
     companion object {
         @Provides

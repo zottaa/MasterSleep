@@ -52,7 +52,7 @@ class DiaryStatisticFragment : AbstractFragment<FragmentDiaryStatisticBinding>()
                     }
                 }
                 launch {
-                    viewModel.uiState.collect {
+                    viewModel.diaryStatisticUiState.collect {
                         it.show(binding)
                     }
                 }

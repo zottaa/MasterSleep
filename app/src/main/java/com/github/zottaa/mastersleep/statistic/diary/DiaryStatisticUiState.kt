@@ -3,10 +3,10 @@ package com.github.zottaa.mastersleep.statistic.diary
 import android.view.View
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryStatisticBinding
 
-interface UiState {
+interface DiaryStatisticUiState {
     fun show(binding: FragmentDiaryStatisticBinding)
 
-    object Progress : UiState {
+    object Progress : DiaryStatisticUiState {
         override fun show(binding: FragmentDiaryStatisticBinding) {
             binding.diaryStatisticProgressBar.visibility = View.VISIBLE
             binding.diaryStatisticRecyclerView.visibility = View.GONE
@@ -14,7 +14,7 @@ interface UiState {
         }
     }
 
-    object Initial : UiState {
+    object Initial : DiaryStatisticUiState {
         override fun show(binding: FragmentDiaryStatisticBinding) {
             binding.diaryStatisticProgressBar.visibility = View.GONE
             binding.diaryStatisticRecyclerView.visibility = View.GONE
@@ -22,7 +22,7 @@ interface UiState {
         }
     }
 
-    object Show : UiState {
+    object Show : DiaryStatisticUiState {
         override fun show(binding: FragmentDiaryStatisticBinding) {
             binding.diaryStatisticProgressBar.visibility = View.GONE
             binding.diaryStatisticRecyclerView.visibility = View.VISIBLE
@@ -30,7 +30,7 @@ interface UiState {
         }
     }
 
-    object NothingFound : UiState {
+    object NothingFound : DiaryStatisticUiState {
         override fun show(binding: FragmentDiaryStatisticBinding) {
             binding.diaryStatisticProgressBar.visibility = View.GONE
             binding.diaryStatisticHeaderRow.visibility = View.GONE

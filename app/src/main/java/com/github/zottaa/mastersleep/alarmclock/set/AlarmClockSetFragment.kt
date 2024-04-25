@@ -41,7 +41,6 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
         binding.setAlarmTimeButton.setOnClickListener {
             setupTimePicker()
         }
-        setupPermissionRequest()
         binding.ringtoneChooseTextView.setOnClickListener {
             findNavController().navigate(
                 AlarmClockSetFragmentDirections
@@ -49,6 +48,7 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
             )
         }
         setupBottomNavigation()
+        setupPermissionRequest()
         observeViewModels()
         sharedViewModel.init()
         if (savedInstanceState != null) {
@@ -64,11 +64,13 @@ class AlarmClockSetFragment : AbstractFragment<FragmentClockSetBinding>() {
 
     private fun setupPermissionRequest() {
         permissionRequest = PermissionRequest(
+            this,
             requireActivity(),
             requireContext()
         ) {
             startAlarmClock()
         }
+        permissionRequest.init()
         binding.startAlarmButton.setOnClickListener {
             requestPermissions()
         }
