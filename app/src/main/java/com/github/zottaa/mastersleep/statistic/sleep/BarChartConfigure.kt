@@ -49,7 +49,7 @@ interface BarChartConfigure {
         ) {
             super.configure(barChart, descriptionLabel, dataSet)
             val xAxis = barChart.xAxis
-            val yAxis = barChart.axisRight
+            val yAxis = barChart.axisLeft
             xAxis.textColor = Color.BLACK
             yAxis.textColor = Color.BLACK
         }
@@ -63,7 +63,7 @@ interface BarChartConfigure {
         ) {
             super.configure(barChart, descriptionLabel, dataSet)
             val xAxis = barChart.xAxis
-            val yAxis = barChart.axisRight
+            val yAxis = barChart.axisLeft
             xAxis.textColor = Color.WHITE
             yAxis.textColor = Color.WHITE
         }

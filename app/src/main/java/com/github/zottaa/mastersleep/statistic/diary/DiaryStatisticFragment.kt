@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryStatisticBinding
@@ -63,17 +64,22 @@ class DiaryStatisticFragment : AbstractFragment<FragmentDiaryStatisticBinding>()
                 }
                 launch {
                     viewModel.nothingFoundSnackBar.collect { shouldShow ->
-                        if (shouldShow) {
-                            viewModel.resetSnackBar()
-                            Snackbar.make(
-                                requireActivity().findViewById(android.R.id.content),
-                                requireContext().getString(R.string.nothing_found),
-                                Snackbar.LENGTH_LONG
-                            ).show()
-                        }
+                        viewModel.resetSnackBar()
+                        showSnackBarIfNeeded()
                     }
                 }
             }
         }
+    }
+
+    private fun showSnackBarIfNeeded() {
+        val viewPager = requireActivity().findViewById<ViewPager2>(R.id.pager)
+        val currentFragment = parentFragmentManager.findFragmentByTag("f" + viewPager.currentItem)
+        if (currentFragment == this)
+            Snackbar.make(
+                requireActivity().findViewById(android.R.id.content),
+                requireContext().getString(R.string.nothing_found),
+                Snackbar.LENGTH_LONG
+            ).show()
     }
 }

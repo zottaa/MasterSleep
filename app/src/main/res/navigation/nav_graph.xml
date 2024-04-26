@@ -34,9 +34,6 @@
         android:id="@+id/diaryCreateFragment"
         android:name="com.github.zottaa.mastersleep.diary.create.DiaryCreateFragment"
         android:label="DiaryCreateFragment">
-        <argument
-            android:name="date"
-            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/diaryEditFragment"

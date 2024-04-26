@@ -11,18 +11,20 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
+import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryCreateBinding
+import com.github.zottaa.mastersleep.diary.core.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), MenuProvider {
-    private val args: DiaryCreateFragmentArgs by navArgs()
     private val viewModel: DiaryCreateViewModel by viewModels()
+    private val sharedCalendarViewModel: CalendarViewModel by activityViewModels()
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (binding.titleTextInputEditText.text.toString()
@@ -31,7 +33,7 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), Menu
                 viewModel.create(
                     binding.titleTextInputEditText.text.toString(),
                     binding.contentTextInputEditText.text.toString(),
-                    args.date
+                    sharedCalendarViewModel.selectedDate.value.toEpochDay()
                 )
             findNavController().popBackStack()
         }
@@ -57,6 +59,10 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), Menu
     private fun restore(savedInstanceState: Bundle) {
         binding.titleTextInputEditText.setText(savedInstanceState.getString(TITLE_KEY))
         binding.contentTextInputEditText.setText(savedInstanceState.getString(CONTENT_KEY))
+        sharedCalendarViewModel.restore(
+            BundleWrapper.String(savedInstanceState),
+            BundleWrapper.StringArray(savedInstanceState)
+        )
     }
 
     private fun setupToolbar() {
@@ -78,6 +84,10 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), Menu
         super.onSaveInstanceState(outState)
         outState.putString(TITLE_KEY, binding.titleTextInputEditText.text.toString())
         outState.putString(CONTENT_KEY, binding.contentTextInputEditText.text.toString())
+        sharedCalendarViewModel.save(
+            BundleWrapper.String(outState),
+            BundleWrapper.StringArray(outState)
+        )
     }
 
     companion object {

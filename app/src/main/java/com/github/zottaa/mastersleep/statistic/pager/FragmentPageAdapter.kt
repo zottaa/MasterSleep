@@ -18,6 +18,7 @@ class FragmentPageAdapter(
         else
             DiaryStatisticFragment()
 
+    
     companion object {
         private const val FRAGMENT_NUMBER = 2
     }

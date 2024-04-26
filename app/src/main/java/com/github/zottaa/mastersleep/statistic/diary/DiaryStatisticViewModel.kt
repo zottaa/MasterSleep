@@ -23,8 +23,8 @@ class DiaryStatisticViewModel @Inject constructor(
     private val mostFrequentWordsCalculate: MostFrequentWordsCalculate
 ) : ViewModel() {
     val diaryStatisticUiState: StateFlow<DiaryStatisticUiState>
-        get() = _DiaryStatistic_uiState
-    private val _DiaryStatistic_uiState: MutableStateFlow<DiaryStatisticUiState> =
+        get() = _diaryStatisticUiState
+    private val _diaryStatisticUiState: MutableStateFlow<DiaryStatisticUiState> =
         MutableStateFlow(DiaryStatisticUiState.Initial)
 
     val wordsFrequency: StateFlow<List<WordFrequency>>
@@ -45,7 +45,7 @@ class DiaryStatisticViewModel @Inject constructor(
 
     fun findWordsFrequency(dateRange: Pair<String, String>) {
         viewModelScope.launch(dispatcher) {
-            _DiaryStatistic_uiState.emit(DiaryStatisticUiState.Progress)
+            _diaryStatisticUiState.emit(DiaryStatisticUiState.Progress)
             val notes = notesRepository.notesInEpochDayRange(
                 dateUtils.stringToEpochDay(dateRange.first),
                 dateUtils.stringToEpochDay(dateRange.second)
@@ -54,9 +54,9 @@ class DiaryStatisticViewModel @Inject constructor(
             val wordsFrequency = mostFrequentWordsCalculate.calculate(words)
             _wordsFrequency.emit(wordsFrequency)
             if (wordsFrequency.isNotEmpty())
-                _DiaryStatistic_uiState.emit(DiaryStatisticUiState.Show)
+                _diaryStatisticUiState.emit(DiaryStatisticUiState.Show)
             else {
-                _DiaryStatistic_uiState.emit(DiaryStatisticUiState.NothingFound)
+                _diaryStatisticUiState.emit(DiaryStatisticUiState.NothingFound)
                 _nothingFoundSnackBar.emit(true)
             }
         }

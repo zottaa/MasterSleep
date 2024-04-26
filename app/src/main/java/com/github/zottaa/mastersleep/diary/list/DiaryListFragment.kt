@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryListBinding
+import com.github.zottaa.mastersleep.diary.core.CalendarViewModel
 import com.github.zottaa.mastersleep.diary.core.NoteUi
 import com.google.android.material.color.MaterialColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,6 +32,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         FragmentDiaryListBinding.inflate(inflater, container, false)
 
     private val viewModel: DiaryListViewModel by viewModels()
+    private val sharedCalendarViewModel: CalendarViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,26 +44,22 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         setupBottomNavigation()
         observeViewModel(calendarAdapter, noteAdapter)
         binding.nextWeekButton.setOnClickListener {
-            viewModel.nextWeek()
+            sharedCalendarViewModel.nextWeek()
         }
         binding.previousWeekButton.setOnClickListener {
-            viewModel.previousWeek()
+            sharedCalendarViewModel.previousWeek()
         }
         binding.addButton.setOnClickListener {
-            val date = viewModel.selectedDate.value.toEpochDay()
-            val action =
-                DiaryListFragmentDirections.actionDiaryListFragmentToDiaryCreateFragment(date)
-            findNavController().navigate(action)
+            findNavController().navigate(DiaryListFragmentDirections.actionDiaryListFragmentToDiaryCreateFragment())
         }
 
         if (savedInstanceState != null) {
             restore(savedInstanceState)
         }
-        viewModel.init(savedInstanceState == null)
     }
 
     private fun restore(savedInstanceState: Bundle) {
-        viewModel.restore(
+        sharedCalendarViewModel.restore(
             BundleWrapper.String(savedInstanceState),
             BundleWrapper.StringArray(savedInstanceState)
         )
@@ -73,7 +72,8 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.selectedDate.collect {
+                    sharedCalendarViewModel.selectedDate.collect {
+                        viewModel.selectDay(it)
                         calendarAdapter.updateDate(it)
                         binding.currentMonthYearTextView.text =
                             it.format(
@@ -83,7 +83,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
                     }
                 }
                 launch {
-                    viewModel.week.collect {
+                    sharedCalendarViewModel.week.collect {
                         calendarAdapter.update(it)
                     }
                 }
@@ -177,7 +177,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
             ),
             object : SelectDay {
                 override fun selectDay(currentDay: LocalDate) {
-                    viewModel.selectDay(currentDay)
+                    sharedCalendarViewModel.selectDay(currentDay)
                 }
             })
         return calendarAdapter
@@ -189,7 +189,7 @@ class DiaryListFragment : AbstractFragment<FragmentDiaryListBinding>() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.save(
+        sharedCalendarViewModel.save(
             BundleWrapper.String(outState),
             BundleWrapper.StringArray(outState)
         )
