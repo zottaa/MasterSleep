@@ -19,6 +19,9 @@ class PermissionRequest(
     private val block: () -> Unit
 ) {
     lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
+    private val permissionDialogProvide by lazy {
+        PermissionDialogProvide.Base(activity, context)
+    }
 
     fun init() {
         requestPermissionLauncher = fragment.registerForActivityResult(
@@ -31,12 +34,6 @@ class PermissionRequest(
                 permissions.entries.forEach { entry ->
                     val permission = entry.key
                     val isGranted = entry.value
-                    val permissionDialogProvide by lazy {
-                        PermissionDialogProvide.Base(
-                            activity,
-                            context
-                        )
-                    }
                     if (!isGranted && !ActivityCompat.shouldShowRequestPermissionRationale(
                             activity,
                             permission
@@ -71,12 +68,6 @@ class PermissionRequest(
             permissionsToRequest.any {
                 ActivityCompat.shouldShowRequestPermissionRationale(activity, it)
             } -> {
-                val permissionDialogProvide by lazy {
-                    PermissionDialogProvide.Base(
-                        activity,
-                        context
-                    )
-                }
                 permissionsToRequest.forEach { permission ->
                     if (ActivityCompat.shouldShowRequestPermissionRationale(
                             activity,

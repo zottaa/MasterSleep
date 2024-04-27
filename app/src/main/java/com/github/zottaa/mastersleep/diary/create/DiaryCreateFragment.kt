@@ -19,12 +19,16 @@ import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.core.BundleWrapper
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryCreateBinding
 import com.github.zottaa.mastersleep.diary.core.CalendarViewModel
+import com.github.zottaa.mastersleep.diary.core.DeleteDialogProvide
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), MenuProvider {
     private val viewModel: DiaryCreateViewModel by viewModels()
     private val sharedCalendarViewModel: CalendarViewModel by activityViewModels()
+    private val deleteDialogProvide by lazy {
+        DeleteDialogProvide.Base(requireContext())
+    }
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (binding.titleTextInputEditText.text.toString()
@@ -108,8 +112,10 @@ class DiaryCreateFragment : AbstractFragment<FragmentDiaryCreateBinding>(), Menu
             }
 
             R.id.delete_menu_item -> {
-                hideKeyboard()
-                findNavController().popBackStack()
+                deleteDialogProvide.showDeleteDialog {
+                    hideKeyboard()
+                    findNavController().popBackStack()
+                }
                 return true
             }
         }

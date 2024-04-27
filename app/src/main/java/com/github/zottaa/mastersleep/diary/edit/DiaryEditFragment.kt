@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentDiaryEditBinding
+import com.github.zottaa.mastersleep.diary.core.DeleteDialogProvide
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +30,9 @@ import kotlinx.coroutines.launch
 class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProvider {
     private val viewModel: DiaryEditViewModel by viewModels()
     private val args: DiaryEditFragmentArgs by navArgs()
+    private val deleteDialogProvide by lazy {
+        DeleteDialogProvide.Base(requireContext())
+    }
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (binding.contentEditTextInputEditText.text.toString()
@@ -110,9 +114,11 @@ class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProv
             }
 
             R.id.delete_menu_item -> {
-                hideKeyboard()
-                viewModel.delete(args.noteId)
-                findNavController().popBackStack()
+                deleteDialogProvide.showDeleteDialog {
+                    hideKeyboard()
+                    viewModel.delete(args.noteId)
+                    findNavController().popBackStack()
+                }
                 return true
             }
         }

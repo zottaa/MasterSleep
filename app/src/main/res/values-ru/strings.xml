@@ -45,4 +45,7 @@
     <string name="current_streak">Текущая серия: %1$d</string>
     <string name="current_max_streak">Максимальная серия: %1$d</string>
     <string name="daily">Ежедневное</string>
+    <string name="delete_note">Удалить запись</string>
+    <string name="delete_note_dialog_text">Вы уверены, что хотите удалить эту запись?\nПодтвердите удаление, пожалуйста.</string>
+    <string name="delete">Удалить</string>
 </resources>
