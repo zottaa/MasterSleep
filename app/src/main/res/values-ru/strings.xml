@@ -8,9 +8,9 @@
     <string name="item_navigation_clock">Часы</string>
     <string name="now">Сейчас</string>
     <string name="alarm">Будильник</string>
-    <string name="set_alarm">Установить будильник</string>
+    <string name="set_alarm">Установить</string>
     <string name="cancel_button">Отмена</string>
-    <string name="start_alarm">Запустить будильник</string>
+    <string name="start_alarm">Запустить</string>
     <string name="rationale_dialog_post_notification">Для работы будильника этому приложению требуется разрешение на отправку уведомлений.</string>
     <string name="rationale_dialog_activity_recognition">Для отслеживания сна этому приложению требуется разрешение на распознавание активности.</string>
     <string name="denial_dialog_post_notification">Эта функция недоступна, поскольку требует разрешение на отправку уведомлений. Пожалуйста, разрешите это в настройках, чтобы продолжить.</string>

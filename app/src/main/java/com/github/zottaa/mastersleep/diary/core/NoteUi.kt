@@ -27,9 +27,7 @@ data class NoteUi(
         val raw = " $title $content"
         val words = raw.split(splitPattern.toRegex()).filter {
             it.isNotBlank()
-        }.map {
-            it.lowercase()
-        }
+        }.map { it.lowercase() }
         return words
     }
 

@@ -22,14 +22,14 @@ class DiaryEditViewModel @Inject constructor(
     private val streaksDataStoreManager: StreaksDataStoreManager
 ) : ViewModel() {
 
-    val noteLiveData: StateFlow<NoteUi>
-        get() = _noteLiveData
-    private val _noteLiveData: MutableStateFlow<NoteUi> = MutableStateFlow(NoteUi(-1L, "", "", 0L))
+    val note: StateFlow<NoteUi>
+        get() = _note
+    private val _note: MutableStateFlow<NoteUi> = MutableStateFlow(NoteUi(-1L, "", "", 0L))
 
     fun init(noteId: Long) {
         viewModelScope.launch(dispatcher) {
             val note = repository.note(noteId).toUi()
-            _noteLiveData.emit(note)
+            _note.emit(note)
         }
     }
 

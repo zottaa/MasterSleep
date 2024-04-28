@@ -4,14 +4,14 @@ import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.formatter.ValueFormatter
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 interface ValueFormatters {
     class BarChartX : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             return LocalDate.ofEpochDay(value.toLong())
-                .format(DateTimeFormatter.ofPattern("dd MM yy"))
+                .format(DateTimeFormatter.ofPattern("dd/MM/yy"))
         }
 
     }
@@ -21,7 +21,7 @@ interface ValueFormatters {
             return LocalDateTime.ofEpochSecond(
                 value.toLong(),
                 0,
-                ZoneId.systemDefault().rules.getOffset(LocalDateTime.now())
+                ZoneOffset.UTC
             ).toLocalTime().toString()
         }
     }

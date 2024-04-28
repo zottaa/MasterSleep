@@ -1,6 +1,7 @@
 package com.github.zottaa.mastersleep.alarmclock.ringtone
 
 import android.app.Dialog
+import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
@@ -46,7 +47,13 @@ class RingtoneSelectDialog : DialogFragment() {
                 ringtones[which].also {
                     currentUri = it.uri
                     playingRingtone = RingtoneManager.getRingtone(requireContext(), currentUri)
-                    playingRingtone?.play()
+                        .also { ringtone ->
+                            ringtone.audioAttributes = AudioAttributes.Builder()
+                                .setUsage(AudioAttributes.USAGE_ALARM)
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build()
+                            ringtone.play()
+                        }
                 }
             }
             .create()

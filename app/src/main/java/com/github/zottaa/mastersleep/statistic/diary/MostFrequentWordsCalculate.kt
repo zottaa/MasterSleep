@@ -23,7 +23,11 @@ interface MostFrequentWordsCalculate {
                     priorityQueue.offer(WordFrequency(word, 1))
                 }
             }
-            return priorityQueue.toList()
+            val result = mutableListOf<WordFrequency>()
+            while (priorityQueue.isNotEmpty()) {
+                priorityQueue.poll()?.let { result.add(it) }
+            }
+            return result
         }
     }
 }

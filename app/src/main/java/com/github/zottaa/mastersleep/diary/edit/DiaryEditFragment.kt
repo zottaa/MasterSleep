@@ -60,7 +60,7 @@ class DiaryEditFragment : AbstractFragment<FragmentDiaryEditBinding>(), MenuProv
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.noteLiveData.collect {
+                viewModel.note.collect {
                     it.showTitle(binding.titleEditTextInputEditText)
                     it.showContent(binding.contentEditTextInputEditText)
                 }
