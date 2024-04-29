@@ -70,15 +70,17 @@ class StreaksDataStoreManager @Inject constructor(
             val lastDateEpochDate = streaks[FIELD_DIARY_STREAK_LAST_DATE] ?: 0
             val lastDate = LocalDate.ofEpochDay(lastDateEpochDate)
             val streak = streaks[FIELD_DIARY_STREAK_CURRENT] ?: 0
-            val newStreak = if (lastDate.plusDays(1) == today)
-                streak + 1
-            else
-                1
-            val maxStreak = streaks[FIELD_DIARY_STREAK_MAX] ?: 0
-            streaks[FIELD_DIARY_STREAK_LAST_DATE] = today.toEpochDay()
-            streaks[FIELD_DIARY_STREAK_CURRENT] = newStreak
-            if (newStreak > maxStreak)
-                streaks[FIELD_DIARY_STREAK_MAX] = newStreak
+            if (lastDate != today) {
+                val newStreak = if (lastDate.plusDays(1) == today)
+                    streak + 1
+                else
+                    1
+                val maxStreak = streaks[FIELD_DIARY_STREAK_MAX] ?: 0
+                streaks[FIELD_DIARY_STREAK_LAST_DATE] = today.toEpochDay()
+                streaks[FIELD_DIARY_STREAK_CURRENT] = newStreak
+                if (newStreak > maxStreak)
+                    streaks[FIELD_DIARY_STREAK_MAX] = newStreak
+            }
         }
     }
 
@@ -88,15 +90,17 @@ class StreaksDataStoreManager @Inject constructor(
             val lastDateEpochDate = streaks[FIELD_SLEEP_STREAK_LAST_DATE] ?: 0
             val lastDate = LocalDate.ofEpochDay(lastDateEpochDate)
             val streak = streaks[FIELD_SLEEP_STREAK_CURRENT] ?: 0
-            val newStreak = if (lastDate.plusDays(1) == today)
-                streak + 1
-            else
-                1
-            val maxStreak = streaks[FIELD_SLEEP_STREAK_MAX] ?: 0
-            streaks[FIELD_SLEEP_STREAK_LAST_DATE] = today.toEpochDay()
-            streaks[FIELD_SLEEP_STREAK_CURRENT] = newStreak
-            if (newStreak > maxStreak)
-                streaks[FIELD_SLEEP_STREAK_MAX] = newStreak
+            if (lastDate != today) {
+                val newStreak = if (lastDate.plusDays(1) == today)
+                    streak + 1
+                else
+                    1
+                val maxStreak = streaks[FIELD_SLEEP_STREAK_MAX] ?: 0
+                streaks[FIELD_SLEEP_STREAK_LAST_DATE] = today.toEpochDay()
+                streaks[FIELD_SLEEP_STREAK_CURRENT] = newStreak
+                if (newStreak > maxStreak)
+                    streaks[FIELD_SLEEP_STREAK_MAX] = newStreak
+            }
         }
     }
 
