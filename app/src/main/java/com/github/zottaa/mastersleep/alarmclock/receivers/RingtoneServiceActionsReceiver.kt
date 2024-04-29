@@ -59,7 +59,7 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
                 }
 
                 STOP_ACTION -> {
-                    val streaksDataStoreManager = StreaksDataStoreManager(context)
+                    val streaksDataStoreManager = StreaksDataStoreManager.Base(context)
                     val alarmDataStoreManager = AlarmDataStoreManager(context)
                     val now = Now.Base()
                     goAsync {
