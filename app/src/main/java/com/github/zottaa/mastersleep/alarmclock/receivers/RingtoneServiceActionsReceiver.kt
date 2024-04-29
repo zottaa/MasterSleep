@@ -5,23 +5,30 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
+import com.github.zottaa.mastersleep.alarmclock.core.SleepSegmentRepository
 import com.github.zottaa.mastersleep.alarmclock.ringtone.RingtoneService
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmItem
+import com.github.zottaa.mastersleep.core.Now
 import com.github.zottaa.mastersleep.main.MainActivity
 import com.github.zottaa.mastersleep.streaks.StreaksDataStoreManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @AndroidEntryPoint
 class RingtoneServiceActionsReceiver : BroadcastReceiver() {
+    @Inject
+    lateinit var repository: SleepSegmentRepository.Create
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context != null && intent != null) {
 
@@ -53,7 +60,13 @@ class RingtoneServiceActionsReceiver : BroadcastReceiver() {
 
                 STOP_ACTION -> {
                     val streaksDataStoreManager = StreaksDataStoreManager(context)
+                    val alarmDataStoreManager = AlarmDataStoreManager(context)
+                    val now = Now.Base()
                     goAsync {
+                        if (alarmDataStoreManager.readSleepStart().first() != 0L) {
+                            repository.create(now.timeInMillis())
+                            alarmDataStoreManager.setSleepStart(0L)
+                        }
                         streaksDataStoreManager.updateSleepStreak()
                     }
                 }

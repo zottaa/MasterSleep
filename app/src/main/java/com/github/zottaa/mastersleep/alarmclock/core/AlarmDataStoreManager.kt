@@ -30,6 +30,12 @@ class AlarmDataStoreManager @Inject constructor(
         }
     }
 
+    suspend fun setSleepStart(startTime: Long) {
+        alarmDataStore.edit { alarm ->
+            alarm[FIELD_SLEEP_START] = startTime
+        }
+    }
+
     fun readAlarm(): Flow<Long> =
         alarmDataStore.data.map { alarm ->
             alarm[FIELD_TIME] ?: 0L
@@ -40,8 +46,14 @@ class AlarmDataStoreManager @Inject constructor(
             alarm[FIELD_START_TIME] ?: 0L
         }
 
+    fun readSleepStart(): Flow<Long> =
+        alarmDataStore.data.map { alarm ->
+            alarm[FIELD_SLEEP_START] ?: 0L
+        }
+
     companion object {
         private val FIELD_TIME = longPreferencesKey("time")
         private val FIELD_START_TIME = longPreferencesKey("startTime")
+        private val FIELD_SLEEP_START = longPreferencesKey("sleepStart")
     }
 }

@@ -5,14 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
-import com.github.zottaa.mastersleep.alarmclock.core.SleepSegmentRepository
+import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
+import com.github.zottaa.mastersleep.core.Now
 import com.google.android.gms.location.SleepClassifyEvent
-import com.google.android.gms.location.SleepSegmentEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -21,27 +21,21 @@ import kotlin.coroutines.EmptyCoroutineContext
 @AndroidEntryPoint
 class SleepReceiver : BroadcastReceiver() {
     @Inject
-    lateinit var repository: SleepSegmentRepository.Create
+    lateinit var alarmDataStore: AlarmDataStoreManager
+
+    @Inject
+    lateinit var now: Now
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent != null) {
-            if (SleepSegmentEvent.hasEvents(intent)) {
-                val events = SleepSegmentEvent.extractEvents(intent)
-                Log.d(TAG, "Logging SleepSegmentEvents")
+            if (SleepClassifyEvent.hasEvents(intent)) {
+                val events = SleepClassifyEvent.extractEvents(intent)
                 for (event in events) {
-                    if (event.status == SleepSegmentEvent.STATUS_SUCCESSFUL) {
+                    if (event.confidence == 100) {
                         goAsync {
-                            repository.create(event.startTimeMillis, event.endTimeMillis)
+                            if (alarmDataStore.readSleepStart().first() == 0L)
+                                alarmDataStore.setSleepStart(now.timeInMillis())
                         }
                     }
-                }
-            } else if (SleepClassifyEvent.hasEvents(intent)) {
-                val events = SleepClassifyEvent.extractEvents(intent)
-                Log.d(TAG, "Logging SleepClassifyEvents")
-                for (event in events) {
-                    Log.d(
-                        TAG,
-                        "Confidence: ${event.confidence} - Light: ${event.light} - Motion: ${event.motion}"
-                    )
                 }
             }
         }

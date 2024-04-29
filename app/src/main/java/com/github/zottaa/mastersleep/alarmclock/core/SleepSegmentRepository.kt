@@ -9,7 +9,7 @@ interface SleepSegmentRepository {
     }
 
     interface Create {
-        suspend fun create(sleepStartTime: Long, sleepEndTime: Long)
+        suspend fun create(sleepEndTime: Long)
     }
 
     interface All : Read, Create
@@ -23,11 +23,11 @@ interface SleepSegmentRepository {
                 .map { SleepSegment(it.startTime, it.sleepStart, it.sleepEnd, it.alarmTime) }
 
 
-        override suspend fun create(sleepStartTime: Long, sleepEndTime: Long) {
+        override suspend fun create(sleepEndTime: Long) {
             dao.insert(
                 SleepSegmentCache(
                     alarmDataStoreManager.readAlarm().first(),
-                    sleepStartTime,
+                    alarmDataStoreManager.readSleepStart().first(),
                     sleepEndTime,
                     alarmDataStoreManager.readStartTime().first()
                 )

@@ -64,8 +64,10 @@ class DiaryStatisticFragment : AbstractFragment<FragmentDiaryStatisticBinding>()
                 }
                 launch {
                     viewModel.nothingFoundSnackBar.collect { shouldShow ->
-                        viewModel.resetSnackBar()
-                        showSnackBarIfNeeded()
+                        if (shouldShow) {
+                            viewModel.resetSnackBar()
+                            showSnackBarIfNeeded()
+                        }
                     }
                 }
             }
