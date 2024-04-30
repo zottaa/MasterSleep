@@ -5,6 +5,21 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="cancel_note_creation()">
+        <State />
+      </entry>
+      <entry key="create_delete_note()">
+        <State />
+      </entry>
+      <entry key="create_note()">
+        <State />
+      </entry>
+      <entry key="create_two_notes()">
+        <State />
+      </entry>
+      <entry key="create_update_note()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
