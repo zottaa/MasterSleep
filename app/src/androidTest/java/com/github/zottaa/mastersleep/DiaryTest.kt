@@ -1,17 +1,54 @@
 package com.github.zottaa.mastersleep
 
+import android.content.Context
+import androidx.room.Room
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
+import com.github.zottaa.mastersleep.core.AppDataBase
+import com.github.zottaa.mastersleep.core.DataBaseModule
 import com.github.zottaa.mastersleep.main.MainActivity
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
+import dagger.hilt.components.SingletonComponent
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Singleton
 
 @RunWith(AndroidJUnit4::class)
+@LargeTest
+@UninstallModules(DataBaseModule::class)
+@HiltAndroidTest
 class DiaryTest {
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    abstract class TestDataBaseModule {
+        companion object {
+            @Singleton
+            @Provides
+            fun provideAppDatabase(@ApplicationContext context: Context): AppDataBase =
+                Room.inMemoryDatabaseBuilder(
+                    context,
+                    AppDataBase::class.java
+                )
+                    .allowMainThreadQueries()
+                    .build()
+        }
+    }
+
     @get:Rule
     var activityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
@@ -21,9 +58,13 @@ class DiaryTest {
         ).perform(click())
     }
 
+    @Before
+    fun setup() {
+        goToDiary()
+    }
+
     @Test
     fun create_note() {
-        goToDiary()
         val noteListPage = ListNotePage()
         noteListPage.checkVisibleNow()
         noteListPage.clickAddButton()
@@ -48,7 +89,6 @@ class DiaryTest {
 
     @Test
     fun cancel_note_creation() {
-        goToDiary()
         val noteListPage = ListNotePage()
         noteListPage.checkVisibleNow()
         noteListPage.clickAddButton()
@@ -65,7 +105,6 @@ class DiaryTest {
 
     @Test
     fun create_two_notes() {
-        goToDiary()
         val noteListPage = ListNotePage()
         noteListPage.checkVisibleNow()
         noteListPage.clickAddButton()
@@ -92,7 +131,6 @@ class DiaryTest {
 
     @Test
     fun create_update_note() {
-        goToDiary()
         val noteListPage = ListNotePage()
         noteListPage.checkVisibleNow()
         noteListPage.clickAddButton()
@@ -130,7 +168,6 @@ class DiaryTest {
 
     @Test
     fun create_delete_note() {
-        goToDiary()
         val noteListPage = ListNotePage()
         noteListPage.checkVisibleNow()
         noteListPage.clickAddButton()

@@ -1,7 +1,5 @@
 package com.github.zottaa.mastersleep.core
 
-import android.content.Context
-import androidx.room.Room
 import com.github.zottaa.mastersleep.alarmclock.schedule.AlarmClockSchedule
 import com.github.zottaa.mastersleep.alarmclock.schedule.SleepRequestManager
 import com.github.zottaa.mastersleep.statistic.diary.MostFrequentWordsCalculate
@@ -12,7 +10,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -61,16 +58,6 @@ abstract class AppModule {
         @Provides
         @Dispatcher(DispatcherType.Main)
         fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-        @Singleton
-        @Provides
-        fun provideAppDatabase(@ApplicationContext context: Context): AppDataBase =
-            Room.databaseBuilder(
-                context,
-                AppDataBase::class.java,
-                "SleepMasterDatabase.db"
-            )
-                .build()
 
         @Provides
         @Singleton
