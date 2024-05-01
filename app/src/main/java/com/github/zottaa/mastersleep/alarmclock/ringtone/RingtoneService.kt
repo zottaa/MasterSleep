@@ -62,12 +62,20 @@ class RingtoneService : Service() {
             )
 
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Alarm")
-                .setContentText("Wake up!")
+                .setContentTitle(this.getString(R.string.alarm))
+                .setContentText(this.getString(R.string.wake_up))
                 .setSmallIcon(R.drawable.baseline_access_time_24)
                 .setContentIntent(pendingIntent)
-                .addAction(R.drawable.ic_delete_button, "Stop", stopPendingIntent)
-                .addAction(R.drawable.baseline_access_time_24, "Snooze", snoozePendingIntent)
+                .addAction(
+                    R.drawable.ic_delete_button,
+                    this.getString(R.string.stop),
+                    stopPendingIntent
+                )
+                .addAction(
+                    R.drawable.baseline_access_time_24,
+                    this.getString(R.string.postpone),
+                    snoozePendingIntent
+                )
                 .setOngoing(true)
                 .build()
 

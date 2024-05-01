@@ -31,10 +31,6 @@ class SleepStatisticViewModel @Inject constructor(
         get() = _sleepDuration
     private val _sleepDuration: MutableStateFlow<List<BarEntry>> = MutableStateFlow(emptyList())
 
-    val timeToWakeUp: StateFlow<List<BarEntry>>
-        get() = _timeToWakeUp
-    private val _timeToWakeUp: MutableStateFlow<List<BarEntry>> = MutableStateFlow(emptyList())
-
     val timeToFallAsleep: StateFlow<List<BarEntry>>
         get() = _timeToFallAsleep
     private val _timeToFallAsleep: MutableStateFlow<List<BarEntry>> = MutableStateFlow(emptyList())
@@ -65,15 +61,6 @@ class SleepStatisticViewModel @Inject constructor(
                     sleepSegments
                 )
             _sleepDuration.emit(sleepDurationDataSet)
-
-            val timeToWakeUpDataSet = chartDataSetBuilder.timeToWakeUpDataSet(
-                Pair(
-                    dateUtils.stringToEpochDay(dateRange.first),
-                    dateUtils.stringToEpochDay(dateRange.second)
-                ),
-                sleepSegments
-            )
-            _timeToWakeUp.emit(timeToWakeUpDataSet)
 
             val timeToFallAsleepDataSet = chartDataSetBuilder.timeToFallAsleepDataSet(
                 Pair(

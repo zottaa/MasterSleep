@@ -3,6 +3,7 @@ package com.github.zottaa.mastersleep.alarmclock.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
+import com.github.zottaa.mastersleep.alarmclock.core.SleepSegmentRepository
 import com.github.zottaa.mastersleep.alarmclock.core.SubscribeDataStoreManager
 import com.github.zottaa.mastersleep.core.DateTimeUtils
 import com.github.zottaa.mastersleep.core.Dispatcher
@@ -26,7 +27,8 @@ class AlarmClockScheduleViewModel @Inject constructor(
     private val alarmClockSchedule: AlarmClockSchedule,
     private val now: Now,
     private val sleepRequestManager: SleepRequestManager.All,
-    private val subscribeDataStoreManager: SubscribeDataStoreManager
+    private val subscribeDataStoreManager: SubscribeDataStoreManager,
+    private val sleepSegmentRepository: SleepSegmentRepository.Create
 ) : ViewModel(), SleepRequestManager.Unsubscribe {
 
     val navigateToSetScreen: StateFlow<Boolean>
@@ -56,6 +58,10 @@ class AlarmClockScheduleViewModel @Inject constructor(
     fun cancel() {
         viewModelScope.launch(dispatcher) {
             val alarmTime = alarmDataStoreManager.readAlarm().first()
+            if (alarmDataStoreManager.readSleepStart().first() != 0L) {
+                sleepSegmentRepository.create(now.timeInMillis())
+                alarmDataStoreManager.setSleepStart(0L)
+            }
             alarmClockSchedule.cancel(AlarmItem(alarmTime))
             alarmDataStoreManager.setAlarm(0L)
             _navigateToSetScreen.emit(true)

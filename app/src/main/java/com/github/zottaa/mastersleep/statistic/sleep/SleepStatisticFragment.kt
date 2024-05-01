@@ -75,16 +75,6 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                     }
                 }
                 launch {
-                    viewModel.timeToWakeUp.collect { dataSet ->
-                        barChartConfigure.configure(
-                            binding.timeToWakeUpChart,
-                            "Time To Wake up",
-                            dataSet
-                        )
-                        binding.timeToWakeUpChart.invalidate()
-                    }
-                }
-                launch {
                     viewModel.wakeUpTime.collect { dataSet ->
                         barChartConfigure.configure(
                             binding.wakeUpTimeChart,

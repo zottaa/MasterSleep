@@ -13,7 +13,6 @@ interface ValueFormatters {
             return LocalDate.ofEpochDay(value.toLong())
                 .format(DateTimeFormatter.ofPattern("dd/MM/yy"))
         }
-
     }
 
     class BarChartY : ValueFormatter() {

@@ -27,6 +27,7 @@ interface BarChartConfigure {
             val xAxis = barChart.xAxis
             val yAxis = barChart.axisLeft
             xAxis.valueFormatter = valueFormatterX
+            xAxis.granularity = 1f
             yAxis.valueFormatter = valueFormatterY
             yAxis.axisMinimum = 0f
 
@@ -35,6 +36,7 @@ interface BarChartConfigure {
             barChart.description = description
 
             val barDataSet = BarDataSet(dataSet, descriptionLabel)
+
             barDataSet.setDrawValues(false)
             val barData = BarData(barDataSet)
             barChart.data = barData

@@ -17,11 +17,6 @@ interface ChartDataSetBuilder {
         sleepSegments: List<SleepSegment>
     ): List<BarEntry>
 
-    fun timeToWakeUpDataSet(
-        epochRange: Pair<Long, Long>,
-        sleepSegments: List<SleepSegment>
-    ): List<BarEntry>
-
     fun timeWhenFallAsleepDataSet(
         epochRange: Pair<Long, Long>,
         sleepSegments: List<SleepSegment>
@@ -59,19 +54,6 @@ interface ChartDataSetBuilder {
                 it.sleepStart.toFloat() - it.startTime
             } ?: 0f
             BarEntry(epochDay.toFloat(), timeToFallAsleep)
-        }
-
-        override fun timeToWakeUpDataSet(
-            epochRange: Pair<Long, Long>,
-            sleepSegments: List<SleepSegment>
-        ): List<BarEntry> = (epochRange.first..epochRange.second).map { epochDay ->
-            val sleepSegment = sleepSegments.find { segment ->
-                dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
-            }
-            val timeToWakeUp = sleepSegment?.let {
-                it.sleepEnd.toFloat() - it.alarmTime
-            } ?: 0f
-            BarEntry(epochDay.toFloat(), timeToWakeUp)
         }
 
         override fun timeWhenFallAsleepDataSet(

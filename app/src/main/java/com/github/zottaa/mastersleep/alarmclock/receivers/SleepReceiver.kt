@@ -70,7 +70,5 @@ class SleepReceiver : BroadcastReceiver() {
                 flags
             )
         }
-
-        private const val TAG = "SLEEP"
     }
 }

@@ -26,12 +26,6 @@
             android:layout_margin="8dp" />
 
         <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/timeToWakeUpChart"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_margin="8dp" />
-
-        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/wakeUpTimeChart"
             android:layout_width="match_parent"
             android:layout_height="400dp"
