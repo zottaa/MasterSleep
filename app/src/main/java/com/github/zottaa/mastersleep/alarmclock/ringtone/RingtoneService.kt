@@ -20,6 +20,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class RingtoneService : Service() {
     private lateinit var ringtone: Ringtone
+    private lateinit var vibrator: VibratorWrapper
 
     @Inject
     lateinit var dataStore: RingtoneDataStore
@@ -30,11 +31,13 @@ class RingtoneService : Service() {
     override fun onCreate() {
         super.onCreate()
         val ringtoneUri = Uri.parse(dataStore.readRingtoneUri())
+        vibrator = VibratorWrapper(this)
         ringtone = RingtoneManager.getRingtone(this, ringtoneUri)
         ringtone.audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_ALARM)
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
             .build()
+        ringtone.isLooping = true
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -64,7 +67,7 @@ class RingtoneService : Service() {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(this.getString(R.string.alarm))
                 .setContentText(this.getString(R.string.wake_up))
-                .setSmallIcon(R.drawable.baseline_access_time_24)
+                .setSmallIcon(R.mipmap.ic_master_sleep_foreground)
                 .setContentIntent(pendingIntent)
                 .addAction(
                     R.drawable.ic_delete_button,
@@ -81,7 +84,9 @@ class RingtoneService : Service() {
 
             startForeground(1, notification)
             ringtone.play()
+            vibrator.start()
         } else if (intent?.action == STOP_SERVICE) {
+            vibrator.stop()
             ringtone.stop()
             stopForeground(STOP_FOREGROUND_REMOVE)
         }

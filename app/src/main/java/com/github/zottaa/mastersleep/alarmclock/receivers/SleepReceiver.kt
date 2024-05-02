@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.github.zottaa.mastersleep.alarmclock.core.AlarmDataStoreManager
-import com.github.zottaa.mastersleep.core.Now
 import com.google.android.gms.location.SleepClassifyEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -23,17 +22,16 @@ class SleepReceiver : BroadcastReceiver() {
     @Inject
     lateinit var alarmDataStore: AlarmDataStoreManager
 
-    @Inject
-    lateinit var now: Now
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent != null) {
             if (SleepClassifyEvent.hasEvents(intent)) {
                 val events = SleepClassifyEvent.extractEvents(intent)
                 for (event in events) {
-                    if (event.confidence == 100) {
+                    println("SleepClassifyEvent: confidence: ${event.confidence}, light: ${event.light}, motion: ${event.motion}")
+                    if (event.confidence > 95) {
                         goAsync {
                             if (alarmDataStore.readSleepStart().first() == 0L)
-                                alarmDataStore.setSleepStart(now.timeInMillis())
+                                alarmDataStore.setSleepStart(event.timestampMillis)
                         }
                     }
                 }

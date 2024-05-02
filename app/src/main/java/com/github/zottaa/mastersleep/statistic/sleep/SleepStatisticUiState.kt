@@ -9,7 +9,6 @@ interface SleepStatisticUiState {
     object Progress : SleepStatisticUiState {
         override fun show(binding: FragmentSleepStatisticBinding) {
             binding.wakeUpTimeChart.visibility = View.GONE
-            binding.timeToWakeUpChart.visibility = View.GONE
             binding.wakeUpTimeChart.visibility = View.GONE
             binding.timeToFallAsleepChart.visibility = View.GONE
             binding.durationChart.visibility = View.GONE
@@ -20,7 +19,6 @@ interface SleepStatisticUiState {
     object Initial : SleepStatisticUiState {
         override fun show(binding: FragmentSleepStatisticBinding) {
             binding.wakeUpTimeChart.visibility = View.GONE
-            binding.timeToWakeUpChart.visibility = View.GONE
             binding.wakeUpTimeChart.visibility = View.GONE
             binding.timeToFallAsleepChart.visibility = View.GONE
             binding.durationChart.visibility = View.GONE
@@ -31,7 +29,6 @@ interface SleepStatisticUiState {
     object Show : SleepStatisticUiState {
         override fun show(binding: FragmentSleepStatisticBinding) {
             binding.wakeUpTimeChart.visibility = View.VISIBLE
-            binding.timeToWakeUpChart.visibility = View.VISIBLE
             binding.wakeUpTimeChart.visibility = View.VISIBLE
             binding.timeToFallAsleepChart.visibility = View.VISIBLE
             binding.durationChart.visibility = View.VISIBLE

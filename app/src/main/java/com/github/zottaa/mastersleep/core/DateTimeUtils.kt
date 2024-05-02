@@ -5,7 +5,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.chrono.IsoChronology
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
@@ -60,12 +59,13 @@ interface DateTimeUtils {
             )
 
         override fun isInEpochDay(epochDay: Long, timeToCheck: Long): Boolean {
+            val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
             val day = LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MIN).toEpochSecond(
-                ZoneOffset.of(ZoneId.systemDefault().id)
+                zoneOffset
             )
             val nextDay =
                 LocalDateTime.of(LocalDate.ofEpochDay(epochDay + 1), LocalTime.MIN).toEpochSecond(
-                    ZoneOffset.of(ZoneId.systemDefault().id)
+                    zoneOffset
                 )
             return timeToCheck in day..<nextDay
         }
