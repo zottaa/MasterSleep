@@ -67,7 +67,7 @@ class RingtoneService : Service() {
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(this.getString(R.string.alarm))
                 .setContentText(this.getString(R.string.wake_up))
-                .setSmallIcon(R.mipmap.ic_master_sleep_foreground)
+                .setSmallIcon(R.mipmap.ic_master_sleep)
                 .setContentIntent(pendingIntent)
                 .addAction(
                     R.drawable.ic_delete_button,
