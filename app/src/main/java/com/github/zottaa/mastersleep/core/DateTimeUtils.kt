@@ -60,13 +60,13 @@ interface DateTimeUtils {
 
         override fun isInEpochDay(epochDay: Long, timeToCheck: Long): Boolean {
             val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
-            val day = LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MIN).toEpochSecond(
+            val day = LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MIN).toInstant(
                 zoneOffset
-            )
+            ).toEpochMilli()
             val nextDay =
-                LocalDateTime.of(LocalDate.ofEpochDay(epochDay + 1), LocalTime.MIN).toEpochSecond(
+                LocalDateTime.of(LocalDate.ofEpochDay(epochDay + 1), LocalTime.MIN).toInstant(
                     zoneOffset
-                )
+                ).toEpochMilli()
             return timeToCheck in day..<nextDay
         }
 

@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>() {
     private val sharedViewModel: PagerFragmentViewModel by activityViewModels()
     private val viewModel: SleepStatisticViewModel by viewModels()
-    private val barChartConfigure by lazy {
+    private val barChartConfigureChartsWithTime by lazy {
         if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 requireContext().resources.configuration.isNightModeActive
             } else {
@@ -30,9 +30,23 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                 currentNightMode == Configuration.UI_MODE_NIGHT_YES
             }
         ) {
-            BarChartConfigure.Night()
+            BarChartConfigure.Night(ValueFormatters.BarChartYToTime())
         } else {
-            BarChartConfigure.Day()
+            BarChartConfigure.Day(ValueFormatters.BarChartYToTime())
+        }
+    }
+    private val barChartConfigureChartsWithTimeOfDay by lazy {
+        if (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                requireContext().resources.configuration.isNightModeActive
+            } else {
+                val currentNightMode =
+                    requireContext().resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                currentNightMode == Configuration.UI_MODE_NIGHT_YES
+            }
+        ) {
+            BarChartConfigure.Night(ValueFormatters.BarChartYToDayTime())
+        } else {
+            BarChartConfigure.Day(ValueFormatters.BarChartYToDayTime())
         }
     }
 
@@ -56,7 +70,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                 }
                 launch {
                     viewModel.sleepDuration.collect { dataSet ->
-                        barChartConfigure.configure(
+                        barChartConfigureChartsWithTime.configure(
                             binding.durationChart,
                             "Duration",
                             dataSet
@@ -66,7 +80,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                 }
                 launch {
                     viewModel.timeToFallAsleep.collect { dataSet ->
-                        barChartConfigure.configure(
+                        barChartConfigureChartsWithTime.configure(
                             binding.timeToFallAsleepChart,
                             "Time To Fall Asleep",
                             dataSet
@@ -76,7 +90,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                 }
                 launch {
                     viewModel.wakeUpTime.collect { dataSet ->
-                        barChartConfigure.configure(
+                        barChartConfigureChartsWithTimeOfDay.configure(
                             binding.wakeUpTimeChart,
                             "Wake Up Time",
                             dataSet
@@ -86,7 +100,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                 }
                 launch {
                     viewModel.timeWhenFallAsleep.collect { dataSet ->
-                        barChartConfigure.configure(
+                        barChartConfigureChartsWithTimeOfDay.configure(
                             binding.timeWhenFallAsleepChart,
                             "Time When Fall Asleep",
                             dataSet

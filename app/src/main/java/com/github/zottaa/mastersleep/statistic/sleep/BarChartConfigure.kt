@@ -6,16 +6,16 @@ import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 
 interface BarChartConfigure {
     fun configure(barChart: BarChart, descriptionLabel: String, dataSet: List<BarEntry>)
 
-    abstract class Abstract : BarChartConfigure {
+    abstract class Abstract(
+        private val valueFormatterY: ValueFormatter
+    ) : BarChartConfigure {
         private val valueFormatterX by lazy {
             ValueFormatters.BarChartX()
-        }
-        private val valueFormatterY by lazy {
-            ValueFormatters.BarChartY()
         }
 
         override fun configure(
@@ -43,7 +43,9 @@ interface BarChartConfigure {
         }
     }
 
-    class Day : Abstract() {
+    class Day(
+        valueFormatterY: ValueFormatter
+    ) : Abstract(valueFormatterY) {
         override fun configure(
             barChart: BarChart,
             descriptionLabel: String,
@@ -57,7 +59,9 @@ interface BarChartConfigure {
         }
     }
 
-    class Night : Abstract() {
+    class Night(
+        valueFormatterY: ValueFormatter
+    ) : Abstract(valueFormatterY) {
         override fun configure(
             barChart: BarChart,
             descriptionLabel: String,

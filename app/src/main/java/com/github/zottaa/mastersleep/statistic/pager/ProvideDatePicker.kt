@@ -16,16 +16,16 @@ interface ProvideDatePicker {
         private val context: Context,
         private val dateUtils: DateUtils
     ) : ProvideDatePicker {
-        override fun provide(currentDateRange: Pair<String, String>): MaterialDatePicker<Pair<Long, Long>> =
-            MaterialDatePicker.Builder.dateRangePicker()
+        override fun provide(currentDateRange: Pair<String, String>): MaterialDatePicker<Pair<Long, Long>> {
+            return MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText(context.getString(R.string.select_dates))
                 .setSelection(
                     Pair(
-                        dateUtils.stringDateToLong(currentDateRange.first),
-                        dateUtils.stringDateToLong(currentDateRange.second)
+                        dateUtils.stringDateToLongUTC(currentDateRange.first),
+                        dateUtils.stringDateToLongUTC(currentDateRange.second)
                     )
                 )
                 .build()
-
+        }
     }
 }

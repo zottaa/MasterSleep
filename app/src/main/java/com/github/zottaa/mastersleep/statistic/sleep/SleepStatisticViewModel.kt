@@ -48,8 +48,8 @@ class SleepStatisticViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             _uiState.emit(SleepStatisticUiState.Progress)
             val sleepSegments = sleepSegmentRepository.sleepSegments(
-                dateUtils.stringDateToLong(dateRange.first),
-                dateUtils.stringDateToLong(dateRange.second)
+                dateUtils.stringDateToLongUTC(dateRange.first),
+                dateUtils.stringDateToLongUTC(dateRange.second)
             )
 
             val sleepDurationDataSet =

@@ -26,10 +26,10 @@ interface SleepSegmentRepository {
         override suspend fun create(sleepEndTime: Long) {
             dao.insert(
                 SleepSegmentCache(
-                    alarmDataStoreManager.readAlarm().first(),
+                    alarmDataStoreManager.readStartTime().first(),
                     alarmDataStoreManager.readSleepStart().first(),
                     sleepEndTime,
-                    alarmDataStoreManager.readStartTime().first()
+                    alarmDataStoreManager.readAlarm().first(),
                 )
             )
         }

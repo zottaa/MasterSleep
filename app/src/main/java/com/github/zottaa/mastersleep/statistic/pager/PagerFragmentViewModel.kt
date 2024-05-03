@@ -25,7 +25,7 @@ class PagerFragmentViewModel @Inject constructor(
         get() = _dateRange
     private val _dateRange: MutableStateFlow<Pair<String, String>> = MutableStateFlow(
         Pair(
-            dateUtils.stringDate(LocalDate.now().minusWeeks(1)),
+            dateUtils.stringDate(LocalDate.now().minusDays(4)),
             dateUtils.stringDate(LocalDate.now())
         )
     )

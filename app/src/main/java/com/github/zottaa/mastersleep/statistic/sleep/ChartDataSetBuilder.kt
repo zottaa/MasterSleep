@@ -4,6 +4,9 @@ import androidx.core.util.Pair
 import com.github.mikephil.charting.data.BarEntry
 import com.github.zottaa.mastersleep.alarmclock.core.SleepSegment
 import com.github.zottaa.mastersleep.core.DateTimeUtils
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 interface ChartDataSetBuilder {
@@ -63,7 +66,13 @@ interface ChartDataSetBuilder {
             val sleepSegment = sleepSegments.find { segment ->
                 dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
             }
-            val timeWhenFallAsleep = sleepSegment?.sleepStart?.toFloat() ?: 0f
+            val time = sleepSegment?.let {
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(it.sleepStart),
+                    ZoneOffset.systemDefault()
+                ).toLocalTime().toSecondOfDay().times(1000).toLong()
+            } ?: 0L
+            val timeWhenFallAsleep = time.toFloat()
             BarEntry(epochDay.toFloat(), timeWhenFallAsleep)
         }
 
@@ -74,7 +83,13 @@ interface ChartDataSetBuilder {
             val sleepSegment = sleepSegments.find { segment ->
                 dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
             }
-            val wakeUpTime = sleepSegment?.sleepEnd?.toFloat() ?: 0f
+            val time = sleepSegment?.let {
+                LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(it.sleepEnd),
+                    ZoneOffset.systemDefault()
+                ).toLocalTime().toSecondOfDay().times(1000).toLong()
+            } ?: 0L
+            val wakeUpTime = time.toFloat()
             BarEntry(epochDay.toFloat(), wakeUpTime)
         }
     }

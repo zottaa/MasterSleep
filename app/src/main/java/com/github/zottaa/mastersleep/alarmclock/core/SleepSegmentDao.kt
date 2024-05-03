@@ -10,6 +10,6 @@ interface SleepSegmentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(sleepSegment: SleepSegmentCache)
 
-    @Query("SELECT * FROM sleep_segments where alarm_time between :startDate and :endDate")
+    @Query("SELECT * FROM sleep_segments where sleep_start between :startDate and :endDate")
     suspend fun sleepSegment(startDate: Long, endDate: Long): List<SleepSegmentCache>
 }

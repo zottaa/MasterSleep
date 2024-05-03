@@ -5,6 +5,7 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -21,6 +22,8 @@ interface DateUtils {
     fun stringDateToLong(date: String, pattern: SimpleDateFormat): Long
 
     fun stringDateToLong(date: String): Long
+
+    fun stringDateToLongUTC(date: String): Long
 
     fun stringToEpochDay(date: String): Long
 
@@ -66,6 +69,16 @@ interface DateUtils {
 
         override fun stringDateToLong(date: String): Long =
             stringDateToLong(date, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()))
+
+        override fun stringDateToLongUTC(date: String): Long {
+            val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
+            pattern.timeZone = TimeZone.getTimeZone(ZoneOffset.UTC.id)
+            return stringDateToLong(
+                date,
+                pattern
+            )
+        }
+
 
         override fun stringToEpochDay(date: String): Long {
             val dateLong = stringDateToLong(date)
