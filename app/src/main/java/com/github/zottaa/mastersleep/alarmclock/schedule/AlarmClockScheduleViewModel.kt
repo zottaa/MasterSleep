@@ -9,6 +9,7 @@ import com.github.zottaa.mastersleep.core.DateTimeUtils
 import com.github.zottaa.mastersleep.core.Dispatcher
 import com.github.zottaa.mastersleep.core.DispatcherType
 import com.github.zottaa.mastersleep.core.Now
+import com.github.zottaa.mastersleep.streaks.StreaksDataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,8 @@ class AlarmClockScheduleViewModel @Inject constructor(
     private val now: Now,
     private val sleepRequestManager: SleepRequestManager.All,
     private val subscribeDataStoreManager: SubscribeDataStoreManager,
-    private val sleepSegmentRepository: SleepSegmentRepository.Create
+    private val sleepSegmentRepository: SleepSegmentRepository.Create,
+    private val streaksDataStoreManager: StreaksDataStoreManager
 ) : ViewModel(), SleepRequestManager.Unsubscribe {
 
     val navigateToSetScreen: StateFlow<Boolean>
@@ -60,6 +62,7 @@ class AlarmClockScheduleViewModel @Inject constructor(
             val alarmTime = alarmDataStoreManager.readAlarm().first()
             if (alarmDataStoreManager.readSleepStart().first() != 0L) {
                 sleepSegmentRepository.create(now.timeInMillis())
+                streaksDataStoreManager.updateSleepStreak()
                 alarmDataStoreManager.setSleepStart(0L)
             }
             alarmClockSchedule.cancel(AlarmItem(alarmTime))
