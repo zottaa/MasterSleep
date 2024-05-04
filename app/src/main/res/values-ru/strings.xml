@@ -48,4 +48,8 @@
     <string name="delete_note">Удалить запись</string>
     <string name="delete_note_dialog_text">Вы уверены, что хотите удалить эту запись?\nПодтвердите удаление, пожалуйста.</string>
     <string name="delete">Удалить</string>
+    <string name="duration">Длительность</string>
+    <string name="time_to_fall_asleep">Время на засыпание</string>
+    <string name="wake_up_time">Время пробуждения</string>
+    <string name="time_when_fall_asleep">Время засыпания</string>
 </resources>

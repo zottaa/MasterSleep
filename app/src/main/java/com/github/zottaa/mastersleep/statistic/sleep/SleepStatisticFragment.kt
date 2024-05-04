@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.github.zottaa.mastersleep.R
 import com.github.zottaa.mastersleep.core.AbstractFragment
 import com.github.zottaa.mastersleep.databinding.FragmentSleepStatisticBinding
 import com.github.zottaa.mastersleep.statistic.pager.PagerFragmentViewModel
@@ -72,7 +73,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                     viewModel.sleepDuration.collect { dataSet ->
                         barChartConfigureChartsWithTime.configure(
                             binding.durationChart,
-                            "Duration",
+                            requireContext().getString(R.string.duration),
                             dataSet
                         )
                         binding.durationChart.invalidate()
@@ -82,7 +83,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                     viewModel.timeToFallAsleep.collect { dataSet ->
                         barChartConfigureChartsWithTime.configure(
                             binding.timeToFallAsleepChart,
-                            "Time To Fall Asleep",
+                            requireContext().getString(R.string.time_to_fall_asleep),
                             dataSet
                         )
                         binding.timeToFallAsleepChart.invalidate()
@@ -92,7 +93,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                     viewModel.wakeUpTime.collect { dataSet ->
                         barChartConfigureChartsWithTimeOfDay.configure(
                             binding.wakeUpTimeChart,
-                            "Wake Up Time",
+                            requireContext().getString(R.string.wake_up_time),
                             dataSet
                         )
                         binding.wakeUpTimeChart.invalidate()
@@ -102,7 +103,7 @@ class SleepStatisticFragment : AbstractFragment<FragmentSleepStatisticBinding>()
                     viewModel.timeWhenFallAsleep.collect { dataSet ->
                         barChartConfigureChartsWithTimeOfDay.configure(
                             binding.timeWhenFallAsleepChart,
-                            "Time When Fall Asleep",
+                            requireContext().getString(R.string.time_when_fall_asleep),
                             dataSet
                         )
                         binding.timeWhenFallAsleepChart.invalidate()

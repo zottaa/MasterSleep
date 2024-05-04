@@ -53,4 +53,9 @@
     <string name="delete_note">Delete Note</string>
     <string name="delete_note_dialog_text">Are you sure you want to delete this note?\nPlease confirm.</string>
     <string name="delete">Delete</string>
+    <string name="duration">Duration</string>
+    <string name="time_to_fall_asleep">Time To Fall Asleep</string>
+    <string name="wake_up_time">Wake Up Time</string>
+    <string name="time_when_fall_asleep">Time When Fall Asleep</string>
+
 </resources>
