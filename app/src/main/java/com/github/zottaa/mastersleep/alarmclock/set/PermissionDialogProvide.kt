@@ -18,7 +18,7 @@ interface PermissionDialogProvide {
 
     fun showPermissionRationaleDialog(
         activityResultLauncher: ActivityResultLauncher<Array<String>>,
-        permission: String
+        permission: String,
     )
 
     class Base(
@@ -44,14 +44,13 @@ interface PermissionDialogProvide {
 
         override fun showPermissionRationaleDialog(
             activityResultLauncher: ActivityResultLauncher<Array<String>>,
-            permission: String
+            permission: String,
         ) {
             val builder = defaultDialog()
                 .setMessage(dialogRationaleProvide(permission))
                 .setPositiveButton(context.getString(R.string.ok)) { dialog: DialogInterface, _: Int ->
                     activityResultLauncher.launch(arrayOf(permission))
                     dialog.dismiss()
-
                 }
             builder.show()
         }

@@ -23,38 +23,52 @@ class PermissionRequest(
         PermissionDialogProvide.Base(activity, context)
     }
 
+    private val permissionsToRequest by lazy {
+        buildPermissionsList()
+    }
+
     fun init() {
         requestPermissionLauncher = fragment.registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) { permissions ->
-            val allPermissionGranted = permissions.all { it.value }
-            if (allPermissionGranted) {
+            handlePermissions(permissions)
+        }
+    }
+
+    private fun handlePermissions(permissions: Map<String, @JvmSuppressWildcards Boolean>) {
+        val allPermissionGranted = permissions.all { it.value }
+        if (allPermissionGranted) {
+            if (
+                permissionsToRequest.all {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        it
+                    ) == PackageManager.PERMISSION_GRANTED
+                }) {
                 block()
-            } else {
-                permissions.entries.forEach { entry ->
-                    val permission = entry.key
-                    val isGranted = entry.value
-                    if (!isGranted && !ActivityCompat.shouldShowRequestPermissionRationale(
-                            activity,
-                            permission
-                        )
-                    ) {
-                        permissionDialogProvide.showPermissionDenialDialog(
-                            permission
-                        )
-                        return@registerForActivityResult
-                    }
-                }
-                requestRuntimePermission(requestPermissionLauncher)
             }
+        } else {
+            permissions.entries.forEach { entry ->
+                val permission = entry.key
+                val isGranted = entry.value
+                if (!isGranted && !ActivityCompat.shouldShowRequestPermissionRationale(
+                        activity,
+                        permission
+                    )
+                ) {
+                    permissionDialogProvide.showPermissionDenialDialog(
+                        permission
+                    )
+                    return
+                }
+            }
+            requestRuntimePermission(requestPermissionLauncher)
         }
     }
 
     fun requestRuntimePermission(
         activityResultLauncher: ActivityResultLauncher<Array<String>>,
     ) {
-        val permissionsToRequest = buildPermissionsList()
-
         when {
             permissionsToRequest.all {
                 ContextCompat.checkSelfPermission(
@@ -76,7 +90,7 @@ class PermissionRequest(
                     )
                         permissionDialogProvide.showPermissionRationaleDialog(
                             activityResultLauncher,
-                            permission
+                            permission,
                         )
                 }
             }
