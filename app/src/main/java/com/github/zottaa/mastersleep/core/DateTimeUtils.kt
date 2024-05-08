@@ -60,14 +60,16 @@ interface DateTimeUtils {
 
         override fun isInEpochDay(epochDay: Long, timeToCheck: Long): Boolean {
             val zoneOffset = ZoneId.systemDefault().rules.getOffset(Instant.now())
-            val day = LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MIN).toInstant(
+
+            val previousDay =
+                LocalDateTime.of(LocalDate.ofEpochDay(epochDay - 1), LocalTime.MAX).toInstant(
                 zoneOffset
             ).toEpochMilli()
-            val nextDay =
-                LocalDateTime.of(LocalDate.ofEpochDay(epochDay + 1), LocalTime.MIN).toInstant(
+            val day =
+                LocalDateTime.of(LocalDate.ofEpochDay(epochDay), LocalTime.MAX).toInstant(
                     zoneOffset
                 ).toEpochMilli()
-            return timeToCheck in day..<nextDay
+            return timeToCheck in previousDay..day
         }
 
         private fun usesAmPm(locale: Locale): Boolean {

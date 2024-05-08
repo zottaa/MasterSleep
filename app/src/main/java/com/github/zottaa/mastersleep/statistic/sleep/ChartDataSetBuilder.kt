@@ -38,7 +38,7 @@ interface ChartDataSetBuilder {
             sleepSegments: List<SleepSegment>
         ): List<BarEntry> = (epochRange.first..epochRange.second).map { epochDay ->
             val sleepSegment = sleepSegments.find { segment ->
-                dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
+                dateTimeUtils.isInEpochDay(epochDay, segment.alarmTime)
             }
             val duration = sleepSegment?.let {
                 it.sleepEnd - it.sleepStart.toFloat()
@@ -51,7 +51,7 @@ interface ChartDataSetBuilder {
             sleepSegments: List<SleepSegment>
         ): List<BarEntry> = (epochRange.first..epochRange.second).map { epochDay ->
             val sleepSegment = sleepSegments.find { segment ->
-                dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
+                dateTimeUtils.isInEpochDay(epochDay, segment.alarmTime)
             }
             val timeToFallAsleep = sleepSegment?.let {
                 it.sleepStart.toFloat() - it.startTime
@@ -64,7 +64,7 @@ interface ChartDataSetBuilder {
             sleepSegments: List<SleepSegment>
         ): List<BarEntry> = (epochRange.first..epochRange.second).map { epochDay ->
             val sleepSegment = sleepSegments.find { segment ->
-                dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
+                dateTimeUtils.isInEpochDay(epochDay, segment.alarmTime)
             }
             val time = sleepSegment?.let {
                 LocalDateTime.ofInstant(
@@ -81,7 +81,7 @@ interface ChartDataSetBuilder {
             sleepSegments: List<SleepSegment>
         ): List<BarEntry> = (epochRange.first..epochRange.second).map { epochDay ->
             val sleepSegment = sleepSegments.find { segment ->
-                dateTimeUtils.isInEpochDay(epochDay, segment.startTime)
+                dateTimeUtils.isInEpochDay(epochDay, segment.alarmTime)
             }
             val time = sleepSegment?.let {
                 LocalDateTime.ofInstant(
