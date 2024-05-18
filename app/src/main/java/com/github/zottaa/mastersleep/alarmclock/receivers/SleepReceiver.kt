@@ -28,7 +28,7 @@ class SleepReceiver : BroadcastReceiver() {
                 val events = SleepClassifyEvent.extractEvents(intent)
                 for (event in events) {
                     println("SleepClassifyEvent: confidence: ${event.confidence}, light: ${event.light}, motion: ${event.motion}")
-                    if (event.confidence >= 85) {
+                    if (event.confidence >= 87) {
                         goAsync {
                             if (alarmDataStore.readSleepStart().first() == 0L)
                                 alarmDataStore.setSleepStart(event.timestampMillis)

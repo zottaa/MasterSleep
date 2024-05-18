@@ -1,4 +1,4 @@
-package com.github.zottaa.mastersleep.diary.list
+package com.github.zottaa.mastersleep.diary.core
 
 import java.time.LocalDate
 

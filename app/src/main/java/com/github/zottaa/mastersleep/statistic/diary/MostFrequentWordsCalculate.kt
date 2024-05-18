@@ -4,24 +4,17 @@ import java.util.PriorityQueue
 
 interface MostFrequentWordsCalculate {
     fun calculate(words: List<String>): List<WordFrequency>
-
     class Base : MostFrequentWordsCalculate {
         override fun calculate(words: List<String>): List<WordFrequency> {
+            val map = HashMap<String, Long>()
+            words.forEach { word ->
+                map.put(word, map.getOrDefault(word, 0) + 1)
+            }
             val priorityQueue = PriorityQueue<WordFrequency> { a, b ->
                 b.frequency.compareTo(a.frequency)
             }
-            for (word in words) {
-                val existingWordFrequency = priorityQueue.find { it.word == word }
-                if (existingWordFrequency != null) {
-                    val updatedWordFrequency = WordFrequency(
-                        existingWordFrequency.word,
-                        existingWordFrequency.frequency + 1
-                    )
-                    priorityQueue.remove(existingWordFrequency)
-                    priorityQueue.offer(updatedWordFrequency)
-                } else {
-                    priorityQueue.offer(WordFrequency(word, 1))
-                }
+            map.forEach { entry ->
+                priorityQueue.add(WordFrequency(entry.key, entry.value))
             }
             val result = mutableListOf<WordFrequency>()
             while (priorityQueue.isNotEmpty()) {
